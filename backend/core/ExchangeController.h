@@ -8,6 +8,7 @@ class ExchangeController;
 #include "PositionStore.hpp"
 #include "OrderEngine.hpp"
 #include "Symbols.hpp"
+#include "Users.h"
 
 #include <map>
 
@@ -55,6 +56,20 @@ class ExchangeController {
         return sm.SerializeAsString();
     }
 
+    std::string EncodeTradeLog(TradeLog tradelog) {
+        event::ServerMessage sm;
+        auto *tl = new event::TradeLog;
+        tl->set_buy_order_id(tradelog.buy_order_id);
+        tl->set_buy_user_id(tradelog.buy_user_id);
+        tl->set_sell_order_id(tradelog.sell_order_id);
+        tl->set_sell_user_id(tradelog.sell_user_id);
+        tl->set_amount(tradelog.amount);
+        tl->set_price(tradelog.price);
+        sm.set_allocated_trade_log(tl);
+
+        return sm.SerializeAsString();
+    }
+
     std::string EncodeOrderUpdate(const OrderUpdate& update) {
         event::ServerMessage sm;
         switch(update.status) {
@@ -89,6 +104,16 @@ class ExchangeController {
         return sm.SerializeAsString();
     }
 
+    void TrySendToAdmin(std::string str) {
+        auto it1 = user_sessions_.find(ADMIN);
+        if (it1 != user_sessions_.end()) {
+            auto sess = it1->second;
+
+            sess->set_message(std::move(str));
+            sess->send_message();
+        }
+    }
+
     void ResultCallback(const OrderEngineResult &result) {
         auto it1 = user_sessions_.find(result.order->user_id);
         if (it1 != user_sessions_.end()) {
@@ -101,12 +126,23 @@ class ExchangeController {
             sess->send_message();
         }
 
-        // TODO: trade_logs & matching_result for admin.
         for (auto update : result.matching_result.order_updates) {
             auto it2 = user_sessions_.find(update.user_id);
             if (it2 != user_sessions_.end()) {
                 auto sess = it2->second;
-                sess->set_message(EncodeOrderUpdate(update));
+                std::string msg = EncodeOrderUpdate(update);
+                TrySendToAdmin(msg);
+                sess->set_message(std::move(msg));
+                sess->send_message();
+            }
+        }
+
+        // Send trade logs to admin.
+        auto admin = user_sessions_.find(ADMIN);
+        if (admin != user_sessions_.end()) {
+            for (auto tradelog: result.matching_result.trade_logs) {
+                auto sess = admin->second;
+                sess->set_message(EncodeTradeLog(tradelog));
                 sess->send_message();
             }
         }
