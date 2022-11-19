@@ -161,6 +161,7 @@ class Bot {
 
         // Listing
         case 'listings':
+            console.log('sfsdfs', event)
           this.state.staticListings = event.listings.listings
           return
         case 'listingUpdates':
@@ -237,6 +238,7 @@ class Bot {
           }
         } else {
           const price = normal(currentPrice, sigma)
+          console.log("selling")
           this.placeOrder({
             ticker: listing.ticker,
             amount: Math.floor(Math.random() * orderSize),
@@ -249,4 +251,11 @@ class Bot {
   }
 }
 
-(new Bot('Jonathan')).authenticate()
+;(new Bot('Jonathan0')).authenticate()
+//;(new Bot('Jonathan1')).authenticate()
+//;(new Bot('Jonathan2')).authenticate()
+//;(new Bot('Jonathan3')).authenticate()
+//;(new Bot('Jonathan4')).authenticate()
+//;(new Bot('Jonathan5')).authenticate()
+//;(new Bot('Jonathan6')).authenticate()
+//;(new Bot('Jonathan7')).authenticate()
