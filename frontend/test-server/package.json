@@ -1,0 +1,20 @@
+{
+    "name": "test-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated --ts_proto_opt=esModuleInterop=true --proto_path ./../../ --ts_proto_opt=oneof=unions generated/events.proto"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "ts-proto": "^1.132.1"
+    },
+    "dependencies": {
+        "@types/node": "^18.11.9",
+        "@types/ws": "^8.5.3",
+        "ws": "^8.11.0"
+    }
+}
