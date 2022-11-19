@@ -1,11 +1,19 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../state/store";
 
 
 export function Register() {
   const store = useStore();
   const [name, setName] = useState('');
+
+  useEffect(() => {
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        store.register(name);
+      }
+    })
+  })
 
   const onRegister = () => {
     store.register(name);

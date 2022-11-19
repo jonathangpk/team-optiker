@@ -103,6 +103,7 @@ message ListingPrices {
 enum OrderType {
   ASK = 0;
   BID = 1;
+  IOC = 2; // Immediate or Cancel
 }
 
 enum OrderUpdateType {
@@ -123,14 +124,14 @@ message PlaceOrder {
 // Client
 // Client cancels order
 message CancelOrder {
-  string id = 1;
+  uint64 id = 1;
 }
 
 
 // Server
 // When a order was created, this is sent to the client
 message OrderCreated {
-  string id = 1;
+  uint64 id = 1;
   OrderType type = 2;
   string ticker = 3;
   int64 price = 4;
@@ -140,27 +141,27 @@ message OrderCreated {
 // Server
 // Send to client when order is partially fullfilled
 message OrderPartiallyFullfilled {
-  string id = 1;
-  // describse how much is already fullfilled
-  uint64 amount = 2;
+  uint64 id = 1;
+  // describse how much is left
+  uint64 amount_left = 2;
 }
 
 // Server
 // Send to client when order is fully fullfilled
 message OrderFullfilled {
-  string id = 1;
+  uint64 id = 1;
 }
 
 
 // Server
 // Send to client when order is cancelled
 message OrderCanceled {
-  string id = 1;
+  uint64 id = 1;
 }
 
 // Represents order details used when fetching all orders on startup
 message InfoOrder {
-  string id = 1;
+  uint64 id = 1;
   OrderType type = 2;
   string ticker = 3;
   int64 price = 4;
@@ -182,7 +183,7 @@ message Orders {
 
 message InfoPosition {
   string ticker = 1;
-  string amount = 2;
+  int64 amount = 2;
   int64 price = 3;
 }
 
@@ -191,6 +192,30 @@ message Positions {
   repeated InfoPosition positions = 1;
 }
 
+/**
+  Market Log
+*/
+
+message Trade {
+  string from = 1;
+  string to = 2;
+  int64 price = 3;
+  uint64 amount = 4;
+  string ticker = 5;
+}
+
+message Trades {
+  repeated Trade trades = 1;
+}
+
+message TradeLog {
+  uint64 buy_order_id = 1;
+  uint64 buy_user_id = 2;
+  uint64 sell_order_id = 3;
+  uint64 sell_user_id = 4;
+  uint64 amount = 5;
+  int64 price = 6;
+}
 
 /** 
   Aggregated Messages
@@ -238,5 +263,6 @@ message ServerMessage {
     Positions positions = 11;
     // Error
     Error error = 12;
+    TradeLog trade_log = 13;
   }
 }

@@ -36,6 +36,8 @@ struct Order {
     time_point order_submission;
     bool cancled;
 
+    Order() {};
+
     Order(
         Symbol sym1, OrderType type1,  Side side1, Price price1, Amount amount1, UserId user_id1,
         OrderId order_id1, time_point order_submission1, bool cancled1) :
@@ -103,6 +105,7 @@ struct MatchinEngineResult {
 struct OrderEngineResult {
     MatchinEngineResult matching_result;
     OrderUpdate new_order_status;
+    Order order;
 };
 
 #endif
