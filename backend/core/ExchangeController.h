@@ -7,6 +7,7 @@ class ExchangeController;
 #include "ExchangeController.h"
 #include "PositionStore.hpp"
 #include "OrderEngine.hpp"
+#include "Symbols.hpp"
 
 class ExchangeController {
     OrderEngine order_engine_;
@@ -30,9 +31,11 @@ public:
         std::cout << "New session Callback" << std::endl;
     }
 
-
-
-
+    bool OnOrderPlacement(UserId user, const std::string& symbol,
+        Side side, Price price, Amount amount) {
+        auto status = order_engine_.CreateLimitOrder(user, symbol, side, price, amount);
+        return (status != SYMBOL_NOT_FOUND);
+    }
 private:
 
     void OnRegistion(UserId user) {
@@ -43,16 +46,13 @@ private:
        return position_store_.GetPosition(user);
     }
 
-    bool OnOrderPlacement(UserId user, const std::string& symbol,
-        Side side, Price price, Amount amount) {
-        auto status = order_engine_.CreateLimitOrder(user, symbol, side, price, amount);
-        if (status == SYMBOL_NOT_FOUND) {
-
-        }
-
-        return true;
-    }
-
+    //    bool subscribe_to(const std::string &) {
+//        auto it = STRING_TO_SYMBOL.find(ticker)
+//        if (it == STRING_TO_SYMBOL.end()) {
+//            return false;
+//        }
+//        it->second
+//    }
 
 };
 

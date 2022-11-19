@@ -18,6 +18,14 @@ public:
 
     }
 
+    std::pair<Price,Price> GetBuyAndSellPrice() {
+        
+        Price buy = buy_side_.Top()->price;
+        Price sell = sell_side_.Top()->price;
+        return {buy, sell};
+        
+    }
+
     OrderEngineResult ExecuteOrder(OrderHandle handle) {
         if(handle->type == LIMIT) {
             return AddLimitOrder(handle);

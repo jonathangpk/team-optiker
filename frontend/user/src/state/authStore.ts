@@ -1,5 +1,4 @@
 import { StateCreator } from "zustand"
-import { client } from "../App"
 import { ClientMessage } from "../generated/events"
 import { Store } from "./store"
 
@@ -23,25 +22,25 @@ export const authSlice: StateCreator<Store, [], [], AuthSlice> = (set, get) => (
   authenticated: window.localStorage.getItem('token') ? AuthState.tokenAvailable : AuthState.notRegistered,
   tryLogin: token => {
     if (token) {
-      client.send(ClientMessage.encode({ 
+      get().client.send(ClientMessage.encode({ 
         event: {
           $case: 'login',
           login: {
             token,
           }
         },
-      }).finish())
+      }))
     }
   },
   register: (name: string) => {
-    client.send(ClientMessage.encode({ 
+    get().client.send(ClientMessage.encode({ 
       event: {
         $case: 'register',
         register: {
           name,
         }
       }
-    }).finish())
+    }))
   },
   loggedIn: (token: string) => {
     window.localStorage.setItem('token', token)

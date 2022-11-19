@@ -16,38 +16,27 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { OrderView } from './pages/OrderView';
 import { BuyOrSell, ExchangeView } from './pages/ExchangeView';
 
-const HOST = 'ws://localhost:8080'
-
-export const client = new WebSocket(HOST);
-client.binaryType = "arraybuffer";
 
 function useInit() {
   const store = useStore();
   
   const { enqueueSnackbar } = useSnackbar()
   const setupEventListeners = () => {
+    store.client.setNotificationHandler(enqueueSnackbar)
     
-    client.onopen = event => console.log('connected');
-    client.onmessage = event => {
-      if (event.data instanceof ArrayBuffer) {
+    store.client.setOnMessageHandler(message => {
+      if (message.data instanceof ArrayBuffer) {
         // binary frame
-        const data = new Uint8Array( event.data );
-        const message = ServerMessage.decode(data)
-        handleServerMessage(store, message);
+        const data = new Uint8Array( message.data );
+        const msg = ServerMessage.decode(data)
+        handleServerMessage(store, msg);
       } else {
         // text frame
         console.log('wrong ws format')
         enqueueSnackbar('Wrong ws format', {variant: 'error'})
       }
-    };
-    client.onerror = (event) => {
-      enqueueSnackbar('Connection error', {variant: 'error'})
-      console.log('onerror', event)
-    };
-    client.onclose = (event) => {
-      enqueueSnackbar('Websocket Connection was closed', {variant: 'error'})
-      console.log('onclose', event) 
-    };
+    })
+    
   }
 
   const authInit = () => {

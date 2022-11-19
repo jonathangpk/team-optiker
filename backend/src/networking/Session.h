@@ -16,6 +16,8 @@
 #include "events.pb.h"
 #include "Users.h"
 #include "ExchangeController.h"
+#include "common.hpp"
+#include "PositionStore.hpp"
 
 #include <boost/beast.hpp>
 #include <boost/beast/http.hpp>
@@ -160,7 +162,7 @@ public:
         case event::ClientMessage::kUnsubscribeListing:
             break;
         case event::ClientMessage::kPlaceOrder:
-//            handle_place_order(msg.place_order());
+            handle_place_order(msg.place_order());
             break;
         case event::ClientMessage::kCancelOrder:
             break;
@@ -224,18 +226,18 @@ private:
         send_message();
     }
 
-//    void handle_place_order(const event::PlaceOrder & order) {
-//        std::cout << "handle place order\n";
-//        if (!cur_user_.has_value()) {
-//            send_error("PERMISSION DENIED. Not logged in.");
-//            return;
-//        }
-//
-//  //      TODO: Do call.
-//        event::ServerMessage sm;
-//        out_ = sm.SerializeAsString();
-//        send_message();
-//    }
+    Side convert(event::OrderType type) {
+        switch (type) {
+        case event::ASK:
+            return Sell;
+        case event::BID:
+            return Buy;
+        default:
+            return Sell;
+        }
+    }
+
+    void handle_place_order(const event::PlaceOrder &order);
 };
 
 

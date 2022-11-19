@@ -1,5 +1,4 @@
 import { StateCreator } from "zustand";
-import { client } from "../App";
 import { ClientMessage, InfoOrder, OrderCreated, OrderFullfilled, OrderPartiallyFullfilled, PlaceOrder } from "../generated/events";
 import { MI } from "../util";
 import { Store } from "./store";
@@ -28,22 +27,22 @@ export const orderSlice: StateCreator<Store, [], [], OrderSlice> = (set, get) =>
   orders: {},
   setOrders: (orders) => set({ orders: Object.fromEntries(orders.map(o => [o.id, o])) }),
   placeOrder: (order) => {
-    client.send(ClientMessage.encode({
+    get().client.send(ClientMessage.encode({
       event: {
         $case: 'placeOrder',
         placeOrder: order,
       }
-    }).finish())
+    }))
   },
   cancelOrder: (orderId) => {
-    client.send(ClientMessage.encode({
+    get().client.send(ClientMessage.encode({
       event: {
         $case: 'cancelOrder',
         cancelOrder: {
           id: orderId,
         }
       }
-    }).finish())
+    }))
   },
   orderCreated: (order: IOrderCreated) => set({
     orders: {
