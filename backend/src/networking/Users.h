@@ -22,7 +22,10 @@ class Users {
     std::shared_mutex lock_;
 
 public:
-    Users() = default;
+    Users() {
+        User admin {ADMIN, "admin"};
+        users_.emplace(std::make_pair(std::string("96457410983275"), admin));
+    }
     ~Users() = default;
 
     std::string register_user(const std::string &name);

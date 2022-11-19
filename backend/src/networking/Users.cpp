@@ -16,8 +16,11 @@ std::string Users::register_user(const std::string& name)
 {
     std::unique_lock<std::shared_mutex> w_lock(lock_);
 
-    std::string token = get_token(cur_uid_);
     cur_uid_ += 1;
+    if (cur_uid_ == ADMIN) {
+        cur_uid_ += 1;
+    }
+    std::string token = get_token(cur_uid_);
     User user {
         .id =  cur_uid_,
         .name = name,
