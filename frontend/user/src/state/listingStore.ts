@@ -8,10 +8,10 @@ export type IListingPrice = MI<typeof ListingPrice>
 export type IListingPrices = MI<typeof ListingPrices>
 export type IListingOrderBook = MI<typeof ListingOrderBook>
 export interface ListingSlice {
-  staticListings: StaticListing[];
-  setStaticListings: (staticListings: StaticListing[]) => void;
-  listingsWithPrice: ListingPrices['listings'];
-  setListingsWithPrice: (listingsWithPrice: ListingPrices['listings']) => void;
+  staticListings: IStaticListing[];
+  setStaticListings: (staticListings: IStaticListing[]) => void;
+  listingsWithPrice: IListingPrices['listings'];
+  setListingsWithPrice: (listingsWithPrice: IListingPrices['listings']) => void;
   listingOrderBook: Record<string, Omit<IListingOrderBook, 'ticker'>>
   setListingOrderBook: (listingOrderBook: IListingOrderBook) => void;
 }

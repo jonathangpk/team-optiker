@@ -30,7 +30,7 @@ export function ExchangeView(props: IProps) {
 	const { type } = props;
 
 	return (
-		<Container title={`${type === "buy" ? "BUY" : "SELL"} ${id}`} navigationPosition="listings" backLocation={`listing/${id}`} >
+		<Container title={`${type === "buy" ? "BUY" : "SELL"} ${id}`} navigationPosition="listings" >
 			<Typography
 				sx={{ display: 'inline', alignItems: "left" }}
 				component="span"

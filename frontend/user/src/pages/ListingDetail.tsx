@@ -16,7 +16,7 @@ export function ListingDetail() {
 	}
 
   return (
-    <Container title={id || ''} navigationPosition="listings" backLocation='listings'>
+    <Container title={id || ''} navigationPosition="listings">
     <PriceGraph />
       <Typography
         sx={{ display: 'inline', alignItems: "left" }}

@@ -15,6 +15,7 @@ import { AuthState } from './state/authStore';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { OrderView } from './pages/OrderView';
 import { BuyOrSell, ExchangeView } from './pages/ExchangeView';
+import { AdminPage } from './pages/AdminPage';
 
 
 function useInit() {
@@ -80,7 +81,11 @@ const router = createBrowserRouter([
   {
     path: '/news',
     element: <News />
-  }
+  },
+  {
+    path: '/admin',
+    element: <AdminPage />
+  },
 ]);
 
 function App() {
@@ -101,6 +106,13 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
   },
+  typography: {
+   "fontFamily": `Roboto`,
+   "fontSize": 14,
+   "fontWeightLight": 50,
+   "fontWeightRegular": 100,
+   "fontWeightMedium": 300
+  }
 });
 
 function ContextWrappers() {
