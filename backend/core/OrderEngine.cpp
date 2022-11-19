@@ -1,10 +1,10 @@
 #include "OrderEngine.hpp"
 
 OrderEngine::OrderEngine(
-        std::function<void(const OrderEngineResult&)> call_back)  {
-    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
-        symbol_to_context_.push_back(new SymbolContext(call_back));
-    }
+        std::function<void(const OrderEngineResult&)> )  {
+//    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
+//        symbol_to_context_.push_back(new SymbolContext(call_back));
+//    }
 
 }
 
