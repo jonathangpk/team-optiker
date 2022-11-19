@@ -4,6 +4,16 @@
 #include "ExchangeController.h"
 #include "Session.h"
 
+void session::handle_cancle_order(const event::CancelOrder& co) {
+    OrderId id = co.id();
+    exchnage_controller_->CancleOrder(cur_user_.value()->id, id);
+}
+
+void session::handle_partial_cancle_order(const event::PartialCancelOrder& co) {
+    OrderId id = co.id();
+    exchnage_controller_->PartialCancleOrder(cur_user_.value()->id, id, co.amount());
+}
+
 void session::handle_place_order(const event::PlaceOrder& order)
 {
     std::cout << "handle place order\n";
@@ -34,9 +44,7 @@ void session::handle_register(const event::Register &reg) {
     std::cout << "handle_register\n";
     std::string token = users_->register_user(reg.name());
     cur_user_ = users_->login(token);
-    exchnage_controller_->OnNewSession(
-        (*cur_user_)->id, std::move(shared_from_this()));
-
+    
     // Give them some money:
     exchnage_controller_->OnRegistion((*cur_user_)->id);
 
@@ -48,14 +56,15 @@ void session::handle_register(const event::Register &reg) {
     std::cout << "sending token\n";
     out_ = sm.SerializeAsString();
     send_message();
+
+    exchnage_controller_->OnNewSession(
+        (*cur_user_)->id, std::move(shared_from_this()));
 }
 
 void session::handle_login(const event::Login &login) {
     std::cout << "handle login\n";
     cur_user_ = users_->login(login.token());
-    exchnage_controller_->OnNewSession(
-        (*cur_user_)->id, std::move(shared_from_this()));
-
+    
     event::ServerMessage sm;
     if (cur_user_.has_value()) {
         std::cout << "current user: " << cur_user_.value()->name << "\n";
@@ -72,4 +81,7 @@ void session::handle_login(const event::Login &login) {
     std::cout << "sending response.\n";
     out_ = sm.SerializeAsString();
     send_message();
+
+    exchnage_controller_->OnNewSession(
+        (*cur_user_)->id, std::move(shared_from_this()));
 }

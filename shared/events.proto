@@ -127,6 +127,11 @@ message CancelOrder {
   uint64 id = 1;
 }
 
+message PartialCancelOrder {
+  uint64 id = 1;
+  uint64 amount = 2;
+}
+
 
 // Server
 // When a order was created, this is sent to the client
@@ -213,7 +218,8 @@ message ClientMessage {
     // Orders
     PlaceOrder place_order = 5;
     CancelOrder cancel_order = 6;
-    Error error = 7;
+    PartialCancelOrder partial_cancle_order = 7;
+    Error error = 8;
   }
 }
 

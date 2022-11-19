@@ -25,7 +25,7 @@ public:
         auto now = std::chrono::system_clock::now();
 
         auto order_handle = std::make_shared<Order>(
-            symbol, type, side, price, amount, user_id, order_id, now, false);
+            symbol, type, side, price, amount, user_id, order_id, now);
 
         auto user_it = user_id_to_order_.emplace(
             std::piecewise_construct, std::make_tuple(user_id), std::make_tuple());

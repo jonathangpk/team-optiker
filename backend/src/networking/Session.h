@@ -158,6 +158,10 @@ public:
             handle_place_order(msg.place_order());
             break;
         case event::ClientMessage::kCancelOrder:
+            handle_cancle_order(msg.cancel_order());
+            break;
+        case event::ClientMessage::kPartialCancleOrder:
+            handle_partial_cancle_order(msg.partial_cancle_order());
             break;
         case event::ClientMessage::kRegister:
             handle_register(msg.register_());
@@ -200,6 +204,10 @@ private:
     }
 
     void handle_place_order(const event::PlaceOrder &order);
+
+    void handle_cancle_order(const event::CancelOrder& co);
+
+    void handle_partial_cancle_order(const event::PartialCancelOrder& co);
     
 };
 

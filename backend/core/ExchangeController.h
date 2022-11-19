@@ -12,15 +12,32 @@ class ExchangeController;
 #include <map>
 
 class ExchangeController {
+    OrderStore order_store_;
     OrderEngine order_engine_;
     PositionStore position_store_;
     static constexpr Money START_CAPITAL = 10000;
 
     std::map<UserId,std::shared_ptr<session>> user_sessions_;
 
-    std::map<UserId, std::shared_ptr<session>> user_sessions_;
+    std::string EncodeOrders(const std::vector<OrderHandle>& orders) {
+        event::Orders sm;
+        for(const auto& order : orders) {
+            event::InfoOrder* info = sm.add_orders();
+            info->set_id(order->order_id);
+            info->set_type(order->side == Sell? event::ASK : event::BID);
+            auto it = SYMBOL_TO_STRING.find(order->sym);
+            if (it == SYMBOL_TO_STRING.end()) {
+                std::cerr << "Symbold not in map" << std::endl;
+                continue;
+            }
+            info->set_ticker(it->second);
+            info->set_price(order->price);
+            info->set_amount(order->amount.load());
+        }
+        return sm.SerializeAsString();
+    }
 
-    std::string EncodeOrderCreated(Order order) {
+    std::string EncodeOrderCreated(const Order& order) {
         event::ServerMessage sm;
         auto *created = new event::OrderCreated;
         created->set_id(order.order_id);
@@ -38,7 +55,7 @@ class ExchangeController {
         return sm.SerializeAsString();
     }
 
-    std::string EncodeOrderUpdate(OrderUpdate update) {
+    std::string EncodeOrderUpdate(const OrderUpdate& update) {
         event::ServerMessage sm;
         switch(update.status) {
         case FILLED: {
@@ -62,17 +79,22 @@ class ExchangeController {
         }
         case PENDING:
             break;
+        case DECREASED:
+            break;
+        case NO_ORDER:
+            break;
         }
+        
 
         return sm.SerializeAsString();
     }
 
     void ResultCallback(const OrderEngineResult &result) {
-        auto it1 = user_sessions_.find(result.order.user_id);
+        auto it1 = user_sessions_.find(result.order->user_id);
         if (it1 != user_sessions_.end()) {
             auto sess = it1->second;
 
-            sess->set_message(EncodeOrderCreated(result.order));
+            sess->set_message(EncodeOrderCreated(*result.order));
             sess->send_message();
 
             sess->set_message(EncodeOrderUpdate(result.new_order_status));
@@ -90,15 +112,23 @@ class ExchangeController {
         }
     }
 
+    
+
 public:
-    ExchangeController() :
-    order_engine_(std::bind_front(&ExchangeController::ResultCallback, this)),
+    ExchangeController() : order_store_(),
+    order_engine_(std::bind_front(&ExchangeController::ResultCallback, this), &order_store_),
     position_store_(PositionStore())
     {
     }
 
 
     void OnNewSession(UserId userId,std::shared_ptr<session> session) {
+        // The user just connected, lets send them some swag.
+        //EncodeOrders
+        auto orders = order_store_.GetOrdersOfUser(userId);
+        session->set_message(EncodeOrders(orders));
+        session->send_message();
+
         user_sessions_.insert({userId, std::move(session)});
     }
 
@@ -106,6 +136,14 @@ public:
         Side side, Price price, Amount amount) {
         auto status = order_engine_.CreateLimitOrder(user, symbol, side, price, amount);
         return (status != SYMBOL_NOT_FOUND);
+    }
+
+    void PartialCancleOrder(UserId user, OrderId order, Amount amount) {
+        order_store_.DecreaseOrder(user, order, amount);
+    }
+
+    void CancleOrder(UserId user, OrderId order) {
+        order_store_.CancelOrder(user, order);
     }
 
 
