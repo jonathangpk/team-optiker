@@ -6,7 +6,7 @@ export const OrderView = () => {
   const { id } = useParams<{ id: string }>();
   const store = useStore();
 
-  const order = store.orders[id as string];
+  // const order = store.orders[id as string];
 
 
   return (
