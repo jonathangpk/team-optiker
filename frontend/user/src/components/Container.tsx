@@ -4,6 +4,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FeedIcon from '@mui/icons-material/Feed';
+import logo from '../OptiKER.png'; 
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -31,7 +32,10 @@ export function Container({ children, title, navigationPosition }: ContainerProp
               </IconButton>
             ) : null
           }
-          <Typography variant={navigationPosition === "home" ? "h3" : "h4"}>{title}</Typography>
+          <Typography style={{ minWidth: 300, textAlign: "left" }} variant={navigationPosition === "home" ? "h3" : "h4"}>{title}</Typography>
+          <div style={{width: "100%"}}>
+            <img src={logo} width={120} style={{float: "right"}}/>
+          </div>
         </Toolbar>
       </AppBar>
       <Box
