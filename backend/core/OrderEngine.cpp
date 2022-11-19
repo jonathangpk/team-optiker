@@ -4,7 +4,7 @@ OrderEngine::OrderEngine() : next_order_id_(0) {
 
 }
 
-OrderEngineResult OrderEngine::CreateLimitOrder(
+OrderEngine::OrderEngineResult OrderEngine::CreateLimitOrder(
         UserId user, const std::string& symbol, Side side, Price price, Amount amount) {
     
 
@@ -22,7 +22,7 @@ OrderEngineResult OrderEngine::CreateLimitOrder(
     return match;
 }
 
-OrderEngineResult OrderEngine::CreateExecuteOrCancelOrder(
+OrderEngine::OrderEngineResult OrderEngine::CreateExecuteOrCancelOrder(
             UserId user, const std::string& symbol, Side side, Price price, 
             Amount amount) {
     
