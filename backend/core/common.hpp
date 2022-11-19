@@ -45,10 +45,10 @@ inline bool operator<(const Order& lhs, const Order& rhs) {
 }
 
 enum OrderStatus {
-    Filled,
-    PartiallyFilled,
-    Pending, 
-    SymbolNotFound
+    FILLED,
+    PARTIALLY_FILLED,
+    PENDING, 
+    CANCLED
 };
 
 struct OrderResult {
