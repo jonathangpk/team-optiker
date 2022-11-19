@@ -6,7 +6,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InfoIcon from '@mui/icons-material/Info';
 
 import { useNavigate  } from "react-router-dom";
 import ListItemButton from '@mui/material/ListItemButton';
@@ -27,6 +26,16 @@ const dummy_data : IListing[] = [
     name: "TUM",
     abbr: "TUM",
     price: 95234,
+  },
+  {
+    name: "Wakanda",
+    abbr: "WAK",
+    price: 4324,
+  },
+  {
+    name: "Narnia",
+    abbr: "NAR",
+    price: 72,
   }
 ]
 
@@ -51,42 +60,43 @@ export function ListingsComponent(props: ListingsProps) {
 		<List sx={{ width: '100%', bgcolor: 'background.paper' }}>
 			{
 				listings.map(lst =>
-          <React.Fragment>
-					<ListItemButton
-						key={lst.abbr}
-						alignItems="flex-start"
-            onClick={() => {
-              navigate(`/listing/${lst.abbr}`);
-            }}
-					>
+          <div>
+            <ListItemButton
+              key={lst.abbr}
+              alignItems="flex-start"
+              onClick={() => {
+                navigate(`/listing/${lst.abbr}`);
+              }}
+            >
 
-						{/* <ListItemAvatar>
-							<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-						</ListItemAvatar> */}
-              <ListItemText
-                primary={
-                  <Typography
-                    sx={{ display: 'inline' }}
-                    component="span"
-                    variant="h6"
-                    color="text.primary"
-                  >
-                    {lst.name}
-                  </Typography>}
-                secondary={ 
+              {/* <ListItemAvatar>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              </ListItemAvatar> */}
+                <ListItemText
+                  primary={
                     <Typography
                       sx={{ display: 'inline' }}
                       component="span"
-                      variant="subtitle1"
-                      color="text.secondary"
+                      variant="h6"
+                      color="text.primary"
                     >
-                      { " — " + lst.abbr}
-                    </Typography>
-                }
-              />
-					</ListItemButton>
-          <Divider component="li" />
-          </React.Fragment>
+                      {lst.name}
+                    </Typography>}
+                  secondary={ 
+                      <Typography
+                        sx={{ display: 'inline' }}
+                        component="span"
+                        variant="subtitle1"
+                        color="text.secondary"
+                      >
+                        { " — " + lst.abbr}
+                      </Typography>
+                  }
+                  key={`it${lst.abbr}`}
+                />
+            </ListItemButton>
+            <Divider component="li" />
+          </div>
 				)
 			}
 		</List>
