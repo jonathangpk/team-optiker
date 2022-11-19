@@ -1,12 +1,8 @@
+import { Container } from "../components/Container";
+import { ListingsComponent } from "../components/ListingComponent";
 
-
-interface ListingsProps {
-
-}
-export function Listings(props: ListingsProps) {
-  return (
-    <div>
-      Listings
-    </div>
-  )
-}
+export const Listings = () => (
+  <Container title="Listings" navigationPosition="listings" backLocation=''>
+    <ListingsComponent />
+  </Container>
+)

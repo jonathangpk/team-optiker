@@ -1,11 +1,14 @@
 import { useParams } from "react-router-dom";
 import { Container } from "../components/Container";
+import { PriceGraph } from "../components/NewChart";
+import { PriceChart } from "../components/PriceChart";
 
 export function ListingDetail() {
-  let { ticker } = useParams<{ticker: string}>();
+  let { id } = useParams<{ id: string }>();
   return (
-    <Container title={ticker || ''}>
-      Details
+    <Container title={id || ''} navigationPosition="listings" backLocation='listings'>
+      Details for {id}
+      <PriceGraph />
     </Container>
   )
 }
