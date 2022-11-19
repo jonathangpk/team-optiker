@@ -38,17 +38,18 @@ export function Container({ children, title, navigationPosition, backLocation }:
               </IconButton>
             ) : null
           }
-          <Typography variant="h4">{title}</Typography>
+          <Typography variant={navigationPosition === "home" ? "h3" : "h4"}>{title}</Typography>
         </Toolbar>
       </AppBar>
       <Box
         style={{
           marginTop: 80,
           width: '100%',
-          position: 'fixed',
-          alignContent: "center",
+          position: "fixed",
+          // display: "flex",
+          justifyContent: "center"
         }}>
-        {children}
+          {children}
       </Box>
       <BottomNavigation
           style={{

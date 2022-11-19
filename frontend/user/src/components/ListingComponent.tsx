@@ -58,42 +58,56 @@ export function ListingsComponent(props: ListingsProps) {
   const listings = dummy_data;
   const navigate = useNavigate();
 
-
-
   return (
-    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      {
-        store.staticListings.map(lst =>
-          <>
-            <ListItemButton
-              key={lst.ticker}
-              alignItems="flex-start"
-              onClick={() => {
-                navigate(`/listing/${lst.ticker}`);
-              }}
-            >
+    <div>
+      <List sx={{
+        width: '100%',
+        bgcolor: 'background.paper',
+        maxHeight: 300,
+        overflow: "auto",
+      }}>
+        {
+          store.staticListings.map(lst =>
+            <>
+              <ListItemButton
+                key={lst.ticker}
+                alignItems="flex-start"
+                onClick={() => {
+                  navigate(`/listing/${lst.ticker}`);
+                }}
+              >
 
-              {/* <ListItemAvatar>
+                {/* <ListItemAvatar>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
               </ListItemAvatar> */}
-              <ListItemText
-                primary={
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={{ display: 'inline' }}
+                      variant="h6"
+                      color="text.primary"
+                    >
+                      {lst.name}
+                    </Typography >
+                  }
+                  secondary={lst.ticker + " — " + lst.description}
+                />
+                <div style={{ float: "right", top: "50px" }}>
                   <Typography
                     sx={{ display: 'inline' }}
-                    component="span"
                     variant="h6"
                     color="text.primary"
+                    style={{ top: "20px", position: "relative" }}
                   >
-                    {" — " + lst.ticker}
-                    {store.listingsWithPrice[lst.ticker]?.price}
+                    {`${store.listingsWithPrice[lst.ticker]?.price} $`}
                   </Typography >
-                }
-              />
-            </ListItemButton >
-            <Divider component="li" />
-          </>
-        )
-      }
-    </List >
+                </div>
+              </ListItemButton>
+              <Divider component="li" />
+            </>
+          )
+        }
+      </List>
+    </div>
   );
 }

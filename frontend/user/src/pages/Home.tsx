@@ -10,7 +10,7 @@ interface HomeProps {
 
 export function Home(props: HomeProps) {
   return (
-    <Container title="Portfolio" navigationPosition="home">
+    <Container title="My Portfolio" navigationPosition="home">
       <ListingsComponent />
       <OrderOverview />
     </Container>
