@@ -41,6 +41,7 @@ add_custom_command(
 
 set(MAIN_SOURCES
     src/main.cpp
+    src/networking/Users.cpp
     events.pb.cc)
 
 set(TOOLS_SOURCES
@@ -53,11 +54,13 @@ set(CORE_SOURCES
     core/OrderEngine.cpp
     core/OrderBookSide.hpp
     core/MatchingEngine.hpp
+    core/ExchangeController.cpp
     )
 
 set(TEST_SOURCES
     tests/tests_main.cpp
     tests/OrderBookTest.cpp
+    tests/OrderStoreTest.cpp
 )
 
 add_executable(optiker-backend

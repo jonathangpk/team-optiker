@@ -5,6 +5,8 @@
 #include <vector>
 #include <chrono>
 #include <iostream>
+#include <memory>
+#include "Symbols.hpp"
 
 using Price = int64_t;
 using Amount = uint64_t;
@@ -18,14 +20,35 @@ enum Side {
     Buy
 };
 
-struct Order {
+enum OrderType {
+    LIMIT,
+    EXECUTE_OR_CANCLE
+};
+
+struct Order { 
+    Symbol sym;
+    OrderType type;
     Side side;
     Price price;
     Amount amount;
     UserId user_id;
     OrderId order_id;
     time_point order_submission;
+    bool cancled;
+
+    Order(
+        Symbol sym1, OrderType type1,  Side side1, Price price1, Amount amount1, UserId user_id1,
+        OrderId order_id1, time_point order_submission1, bool cancled1) :
+            sym(sym1), type(type1), side(side1), price(price1), amount(amount1), 
+            user_id(user_id1), order_id(order_id1), 
+            order_submission(order_submission1), cancled(cancled1) {
+
+    }
+
+
 };
+
+using OrderHandle = std::shared_ptr<Order>;
 
 inline bool operator<(const Order& lhs, const Order& rhs) {
     if (lhs.side != rhs.side) {
@@ -51,14 +74,15 @@ enum OrderStatus {
     CANCLED
 };
 
-struct OrderResult {
+struct OrderUpdate {
     OrderId order_id;
     UserId user_id;
     Amount amount_filled;
     OrderStatus status;
 };
 
-struct TradeResult {
+
+struct TradeLog {
     OrderId buy_order_id;
     UserId buy_user_id;
     OrderId sell_order_id;
@@ -67,13 +91,18 @@ struct TradeResult {
     Price price;
 };
 
-using TradeResults = std::vector<TradeResult>;
-using OrderResults = std::vector<OrderResult>;
+using TradeLogs = std::vector<TradeLog>;
+using OrderUpdates = std::vector<OrderUpdate>;
 
 struct MatchinEngineResult {
-    TradeResults trade_results;
-    OrderResults order_results;
+    TradeLogs trade_logs;
+    OrderUpdates order_updates;
     Amount amount_traded;
+};
+
+struct OrderEngineResult {
+    MatchinEngineResult matching_result;
+    OrderUpdate new_order_status;
 };
 
 #endif

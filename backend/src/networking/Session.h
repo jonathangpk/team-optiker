@@ -14,6 +14,7 @@
 
 #include "common.h"
 #include "events.pb.h"
+#include "Users.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -26,13 +27,16 @@ class session : public std::enable_shared_from_this<session>
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer in_;
     std::string out_;
+    Users* users_;
+    std::optional<const User*> cur_user_ = {};
 
 
 public:
     // Take ownership of the socket
     explicit
-    session(tcp::socket&& socket)
+    session(tcp::socket&& socket, Users* users)
             : ws_(std::move(socket))
+            , users_(users)
     {
     }
 
@@ -81,16 +85,16 @@ public:
         if(ec)
             return fail(ec, "accept");
 
-        event::ServerMessage sm;
-        event::NewEvent *event = new event::NewEvent;
-        event->set_title("Test");
-        event->set_description("Testing");
-        event->add_actions();
-        sm.set_allocated_new_event(event);
-
-        out_ = sm.SerializeAsString();
-
-        send_message();
+//        event::ServerMessage sm;
+//        event::NewEvent *event = new event::NewEvent;
+//        event->set_title("Test");
+//        event->set_description("Testing");
+//        event->add_actions();
+//        sm.set_allocated_new_event(event);
+//
+//        out_ = sm.SerializeAsString();
+//
+//        send_message();
 
         // Read a message
         do_read();
@@ -102,6 +106,16 @@ public:
                 beast::bind_front_handler(
                         &session::on_write,
                         shared_from_this()));
+    }
+
+    void send_error(const char* str) {
+        event::ServerMessage sm;
+        auto *error = new event::Error;
+        error->set_error(str);
+        sm.set_allocated_error(error);
+
+        out_ = sm.SerializeAsString();
+        send_message();
     }
 
     void
@@ -132,19 +146,88 @@ public:
         event::ClientMessage msg;
         msg.ParseFromArray(in_.cdata().data(), bytes_transferred);
 
-        std::cout << "received " << msg.place_order().ticker() << std::endl;
+        switch (msg.event_case()) {
+        case event::ClientMessage::kSubscribeListing:
+            break;
+        case event::ClientMessage::kUnsubscribeListing:
+            break;
+        case event::ClientMessage::kPlaceOrder:
+//            handle_place_order(msg.place_order());
+            break;
+        case event::ClientMessage::kCancelOrder:
+            break;
+        case event::ClientMessage::kRegister:
+            handle_register(msg.register_());
+            break;
+        case event::ClientMessage::kLogin:
+            handle_login(msg.login());
+            break;
+        case event::ClientMessage::EVENT_NOT_SET:
+            break;
+        case event::ClientMessage::kError:
+            break;
+        }
+
+        do_read();
     }
 
     void
-    on_write(
-            beast::error_code ec,
-            std::size_t bytes_transferred)
-    {
+    on_write(beast::error_code ec, std::size_t bytes_transferred) {
         boost::ignore_unused(bytes_transferred);
 
         if(ec)
             return fail(ec, "write");
     }
+
+private:
+    void handle_register(const event::Register &reg) {
+        std::cout << "handle_register\n";
+        std::string token = users_->register_user(reg.name());
+
+        event::ServerMessage sm;
+        auto *auth_token = new event::AuthToken;
+        auth_token->set_token(std::move(token));
+        sm.set_allocated_auth_token(auth_token);
+
+        std::cout << "sending token\n";
+        out_ = sm.SerializeAsString();
+        send_message();
+    }
+
+    void handle_login(const event::Login &login) {
+        std::cout << "handle login\n";
+        cur_user_ = users_->login(login.token());
+
+        event::ServerMessage sm;
+        if (cur_user_.has_value()) {
+            std::cout << "current user: " << cur_user_.value()->name << "\n";
+            auto *auth_token = new event::AuthToken;
+            auth_token->set_token(login.token());
+            sm.set_allocated_auth_token(auth_token);
+        } else {
+            std::cout << "no user found for this token.\n";
+            auto *error = new event::Error;
+            error->set_error("Error: Invalid Token.");
+            sm.set_allocated_error(error);
+        }
+
+        std::cout << "sending response.\n";
+        out_ = sm.SerializeAsString();
+        send_message();
+    }
+
+//    void handle_place_order(const event::PlaceOrder & order) {
+//        std::cout << "handle place order\n";
+//        if (!cur_user_.has_value()) {
+//            send_error("PERMISSION DENIED. Not logged in.");
+//            return;
+//        }
+//
+//  //      TODO: Do call.
+//        event::ServerMessage sm;
+//        out_ = sm.SerializeAsString();
+//        send_message();
+//    }
 };
 
 
