@@ -8,6 +8,8 @@
 #include <memory>
 #include "Symbols.hpp"
 
+#include <atomic>
+
 using Price = int64_t;
 using Amount = uint64_t;
 using UserId = uint64_t;
@@ -30,7 +32,7 @@ struct Order {
     OrderType type;
     Side side;
     Price price;
-    Amount amount;
+    std::atomic<Amount> amount;
     UserId user_id;
     OrderId order_id;
     time_point order_submission;
@@ -71,7 +73,9 @@ enum OrderStatus {
     FILLED,
     PARTIALLY_FILLED,
     PENDING, 
-    CANCLED
+    CANCLED,
+    DECREASED,
+    NO_ORDER
 };
 
 struct OrderUpdate {

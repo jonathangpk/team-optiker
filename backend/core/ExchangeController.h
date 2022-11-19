@@ -9,10 +9,14 @@ class ExchangeController;
 #include "OrderEngine.hpp"
 #include "Symbols.hpp"
 
+#include <map>
+
 class ExchangeController {
     OrderEngine order_engine_;
     PositionStore position_store_;
-    const Money START_CAPITAL = 10000;
+    static constexpr Money START_CAPITAL = 10000;
+
+    std::map<UserId,std::shared_ptr<session>> user_sessions_;
 
 
     void ResultCallback(const OrderEngineResult &) {
@@ -27,8 +31,8 @@ public:
     }
 
 
-    void OnNewSession(std::shared_ptr<session>) {
-        std::cout << "New session Callback" << std::endl;
+    void OnNewSession(UserId userId,std::shared_ptr<session> session) {
+        user_sessions_.insert({userId, std::move(session)});
     }
 
     bool OnOrderPlacement(UserId user, const std::string& symbol,
@@ -36,12 +40,13 @@ public:
         auto status = order_engine_.CreateLimitOrder(user, symbol, side, price, amount);
         return (status != SYMBOL_NOT_FOUND);
     }
-private:
+
 
     void OnRegistion(UserId user) {
         position_store_.AddCashAndPosition(user, START_CAPITAL, static_cast<Symbol>(0), 0);
     }
 
+private:
     const Position& GetPosition(UserId user) {
        return position_store_.GetPosition(user);
     }

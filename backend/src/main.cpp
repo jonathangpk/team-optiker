@@ -48,7 +48,6 @@ int main(int argc, char* argv[])
 
     // Create and launch a listening port
     std::make_shared<listener>(ioc, tcp::endpoint{address, port}, 
-        std::bind_front(&ExchangeController::OnNewSession,&exchange_controller),
         &exchange_controller, &users)->run();
 
     // Run the I/O service on the requested number of threads

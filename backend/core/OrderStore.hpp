@@ -34,6 +34,61 @@ public:
         return order_handle;
     }
 
+    OrderUpdate CancelOrder(UserId user_id, OrderId orderid) {
+        std::shared_lock<std::shared_mutex> r_lock(mutex_);
+        auto it = order_id_to_order_.find(orderid);
+ 
+        if (it == order_id_to_order_.end()) {
+            return {orderid, user_id, 0, NO_ORDER}; 
+        }
+
+        const auto& order = it->second;
+        if (user_id != order->user_id) {
+            return {orderid, user_id, 0, NO_ORDER}; 
+        }
+
+        bool sucess = false;
+        Amount order_amount = order->amount.load();
+        while(order_amount != 0) {
+            sucess = order->amount.compare_exchange_strong(order_amount, 0);
+            order_amount = order->amount.load();
+        }
+        if(sucess) {
+            return {orderid, user_id, 0, CANCLED}; 
+        } else {
+            // Some other thred executed the order
+            return {orderid, user_id, 0, NO_ORDER}; 
+        }
+    }
+
+
+    OrderUpdate DecreaseOrder(UserId user_id, OrderId orderid, Amount by) {
+        std::shared_lock<std::shared_mutex> r_lock(mutex_);
+        auto it = order_id_to_order_.find(orderid);
+ 
+        if (it == order_id_to_order_.end()) {
+            return {orderid, user_id, 0, NO_ORDER}; 
+        }
+
+        const auto& order = it->second;
+        if (user_id != order->user_id) {
+            return {orderid, user_id, 0, NO_ORDER}; 
+        }
+
+        bool sucess = false;
+        Amount order_amount = order->amount.load();
+        while(order_amount > 0 && !sucess) {
+            sucess = order->amount.compare_exchange_strong(order_amount, order_amount - by);
+            order_amount = order->amount.load();
+        }
+        if(sucess) {
+            return {orderid, user_id, order_amount, DECREASED}; 
+        } else {
+            // Some other thred executed the order
+            return {orderid, user_id, 0, NO_ORDER}; 
+        }
+    }
+
     const std::vector<OrderHandle>& GetOrdersOfUser(UserId user) {
         std::shared_lock<std::shared_mutex> r_lock(mutex_);
         auto it = user_id_to_order_.find(user);
@@ -43,6 +98,8 @@ public:
             return it->second;
         }
     }
+
+    
 
 
 private:
