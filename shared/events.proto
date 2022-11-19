@@ -141,7 +141,7 @@ message OrderCreated {
 // Server
 // Send to client when order is partially fullfilled
 message OrderPartiallyFullfilled {
-  string id = 1;
+  uint64 id = 1;
   // describse how much is left
   uint64 amount_left = 2;
 }
@@ -149,19 +149,19 @@ message OrderPartiallyFullfilled {
 // Server
 // Send to client when order is fully fullfilled
 message OrderFullfilled {
-  string id = 1;
+  uint64 id = 1;
 }
 
 
 // Server
 // Send to client when order is cancelled
 message OrderCanceled {
-  string id = 1;
+  uint64 id = 1;
 }
 
 // Represents order details used when fetching all orders on startup
 message InfoOrder {
-  string id = 1;
+  uint64 id = 1;
   OrderType type = 2;
   string ticker = 3;
   int64 price = 4;
