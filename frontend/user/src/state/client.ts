@@ -1,5 +1,5 @@
-import { State } from "./state";
-import { ClientMessage, Login, OrderType, Register, ServerMessage } from "../generated/events";
+import { Store } from "./store";
+import { ServerMessage } from "../generated/events";
 
 
 
@@ -13,7 +13,7 @@ function exhausted(arg: never): never {
   console.log('should not happen, switch should be exhausted')
 }
 
-export function handleServerMessage(store: State, message: ServerMessage) {
+export function handleServerMessage(store: Store, message: ServerMessage) {
   if (!message.event) {
     console.log("Error, no event defined on message")
     return
@@ -23,7 +23,11 @@ export function handleServerMessage(store: State, message: ServerMessage) {
     case 'authToken':
       store.loggedIn(event.authToken.token)
       return
-    // case '':
+    case 'orderCreated':
+      store.orderCreated(event.orderCreated)
+      return
+    case 'orderCanceld':
+      store.orderCanceld(event.orderCanceld.id)
 
     // default:
     //   exhausted(event.$case)

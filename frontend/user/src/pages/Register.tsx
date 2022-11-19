@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
-import { useStore } from "../state/state";
+import { useStore } from "../state/store";
 
 
 export function Register() {

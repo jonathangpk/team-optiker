@@ -4,7 +4,7 @@ import './App.css';
 import { handleServerMessage } from './state/client';
 import { PriceChart } from './components/PriceChart';
 import { SnackbarProvider } from 'notistack';
-import { AuthState, useStore } from './state/state';
+import { useStore } from './state/store';
 import { ServerMessage } from './generated/events';
 import { useSnackbar } from 'notistack';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { Home } from './pages/Home';
 import { Listings } from './pages/Listings';
 import { News } from './pages/News';
 import { ListingDetail } from './pages/ListingDetail';
+import { AuthState } from './state/authStore';
 
 const HOST = 'ws://localhost:8080'
 
