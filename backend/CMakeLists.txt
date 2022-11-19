@@ -58,6 +58,7 @@ set(CORE_SOURCES
 set(TEST_SOURCES
     tests/tests_main.cpp
     tests/OrderBookTest.cpp
+    tests/OrderStoreTest.cpp
 )
 
 add_executable(optiker-backend

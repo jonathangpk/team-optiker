@@ -1,28 +1,28 @@
 #include "OrderEngine.hpp"
 
-OrderEngine::OrderEngine() : next_order_id_(0) {
+OrderEngine::OrderEngine() {
 
 }
 
-OrderEngine::OrderEngineResult OrderEngine::CreateLimitOrder(
+OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateLimitOrder(
         UserId user, const std::string& symbol, Side side, Price price, Amount amount) {
-    
+
 
     auto order_book_it = symbold_to_order_book_.find(symbol);
     if (order_book_it == symbold_to_order_book_.end()) {
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
-    OrderId order_id = ++next_order_id_;
-    auto now = std::chrono::system_clock::now();
-    Order order {side, price, amount, user, order_id, now};
+    
+    auto order_handle = order_store_.CreateOrder(user, symbol, side, price, amount);
+    
 
-    MatchinEngineResult match = order_book_it->second.AddLimitOrder(order);
+    auto match = order_book_it->second.AddLimitOrder(order_handle);
 
     return match;
 }
 
-OrderEngine::OrderEngineResult OrderEngine::CreateExecuteOrCancelOrder(
+OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateExecuteOrCancelOrder(
             UserId user, const std::string& symbol, Side side, Price price, 
             Amount amount) {
     
@@ -32,11 +32,9 @@ OrderEngine::OrderEngineResult OrderEngine::CreateExecuteOrCancelOrder(
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
-    OrderId order_id = ++next_order_id_;
-    auto now = std::chrono::system_clock::now();
-    Order order {side, price, amount, user, order_id, now};
+    auto order_handle = order_store_.CreateOrder(user, symbol, side, price, amount);
 
-    MatchinEngineResult match = order_book_it->second.ExecuteOrCancle(order);
+    auto match = order_book_it->second.ExecuteOrCancle(order_handle);
 
     return match;
 }

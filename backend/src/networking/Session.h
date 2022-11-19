@@ -82,7 +82,7 @@ public:
             return fail(ec, "accept");
 
         event::ServerMessage sm;
-        event::NewEvent *event = new event::NewEvent;
+        event::NewNews *event = new event::NewNews;
         event->set_title("Test");
         event->set_description("Testing");
         event->add_actions();

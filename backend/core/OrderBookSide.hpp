@@ -9,11 +9,11 @@ public:
     DefaultOrderBookSide(Side side) : side_(side) {
 
     }
-    void AddOrder(Order&& order) {
+    void AddOrder(OrderHandle&& order) {
         orders_.push(std::move(order));
     }
 
-    void AddOrder(const Order& order) {
+    void AddOrder(const OrderHandle& order) {
         orders_.push(std::move(order));
     }
 
@@ -21,7 +21,7 @@ public:
         return orders_.size();
     }
 
-    const Order& Top() {
+    const OrderHandle& Top() {
         return orders_.top();
     }
 
@@ -35,7 +35,7 @@ public:
 
 
 private:
-    std::priority_queue<Order, std::vector<Order>> orders_;
+    std::priority_queue<OrderHandle, std::vector<OrderHandle>> orders_;
     Side side_;
 };
 

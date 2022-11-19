@@ -3,6 +3,7 @@
 
 #include "common.hpp"
 #include "OrderBook.hpp"
+#include "OrderStore.hpp"
 #include "tools/StatusOr.h"
 
 #include <map>
@@ -16,20 +17,20 @@ class OrderEngine {
 
     OrderEngine();
 
-    using OrderEngineResult
-        = StatusOr<MatchinEngineResult, OrderEngineStatus>;
+    using OrderEngineResultOrStatus
+        = StatusOr<OrderEngineResult, OrderEngineStatus>;
 
-    OrderEngineResult CreateLimitOrder(
+    OrderEngineResultOrStatus CreateLimitOrder(
         UserId user, const std::string& symbol, 
         Side side, Price price, Amount amount);
 
-    OrderEngineResult CreateExecuteOrCancelOrder(
+    OrderEngineResultOrStatus CreateExecuteOrCancelOrder(
         UserId user, const std::string& symbol, 
         Side side, Price price, Amount amount);
 
 private:
-    OrderId next_order_id_; 
     std::map<std::string, Orderbook<>> symbold_to_order_book_;
+    OrderStore order_store_;
 
 };
 

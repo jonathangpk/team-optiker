@@ -18,70 +18,68 @@ public:
 
     }
 
-    MatchinEngineResult ExecuteOrCancle(Order order) {
-        MatchinEngineResult result;
-        if (order.side == Sell) {
-            result = MatchingEngine::Match(buy_side_, order);
+    OrderEngineResult ExecuteOrCancle(OrderHandle order) {
+        OrderEngineResult result;
+        if (order->side == Sell) {
+            result.matching_result = MatchingEngine::Match(buy_side_, order);
         } else {
-            result = MatchingEngine::Match(sell_side_, order);
+            result.matching_result = MatchingEngine::Match(sell_side_, order);
         }
 
-        if (result.amount_traded == order.amount) {
-            OrderResult order_result {
-                order.order_id, order.user_id, 
-                order.amount, FILLED
+        Amount traded_amount = result.matching_result.amount_traded;
+
+        if (traded_amount == order->amount) {
+            result.new_order_status = OrderUpdate {
+                order->order_id, order->user_id, 
+                order->amount, FILLED
             };
-            result.order_results.push_back(std::move(order_result));
-            
-        } else if (result.amount_traded > 0) {
-            OrderResult order_result {
-                order.order_id, order.user_id, 
-                result.amount_traded, PARTIALLY_FILLED
+        } else if (traded_amount > 0) {
+            result.new_order_status = OrderUpdate {
+                order->order_id, order->user_id, 
+                traded_amount, PARTIALLY_FILLED
             };
-            result.order_results.push_back(std::move(order_result));
-            order.amount -= result.amount_traded;
-        } else if (result.amount_traded == 0) {
-            OrderResult order_result {
-                order.order_id, order.user_id, 
+            order->amount -= traded_amount;
+        } else if (traded_amount == 0) {
+            result.new_order_status = OrderUpdate {
+                order->order_id, order->user_id, 
                 0, CANCLED
             };
-            result.order_results.push_back(std::move(order_result));
         }
         return result;
 
     }
 
-    MatchinEngineResult AddLimitOrder(Order order) {
-        MatchinEngineResult result;
-        if (order.side == Sell) {
-            result = MatchingEngine::Match(buy_side_, order);
+    OrderEngineResult AddLimitOrder(OrderHandle order) {
+        // Return value compy optimization is going to play here for us.
+        OrderEngineResult result;
+        if (order->side == Sell) {
+            result.matching_result = MatchingEngine::Match(buy_side_, order);
         } else {
-            result = MatchingEngine::Match(sell_side_, order);
+            result.matching_result = MatchingEngine::Match(sell_side_, order);
         }
 
-        if (result.amount_traded == order.amount) {
-            OrderResult order_result {
-                order.order_id, order.user_id, 
-                order.amount, FILLED
+        Amount traded_amount = result.matching_result.amount_traded;
+
+        if (traded_amount == order->amount) {
+            result.new_order_status = OrderUpdate {
+                order->order_id, order->user_id, 
+                order->amount, FILLED
             };
-            result.order_results.push_back(std::move(order_result));
             return result;
-        } else if (result.amount_traded > 0) {
-            OrderResult order_result {
-                order.order_id, order.user_id, 
-                result.amount_traded, PARTIALLY_FILLED
+        } else if (traded_amount > 0) {
+            result.new_order_status = OrderUpdate {
+                order->order_id, order->user_id, 
+                traded_amount, PARTIALLY_FILLED
             };
-            result.order_results.push_back(std::move(order_result));
-            order.amount -= result.amount_traded;
-        } else if (result.amount_traded == 0) {
-            OrderResult order_result {
-                order.order_id, order.user_id, 
+            order->amount -= traded_amount;
+        } else if (traded_amount == 0) {
+            result.new_order_status = OrderUpdate {
+                order->order_id, order->user_id, 
                 0, PENDING
             };
-            result.order_results.push_back(std::move(order_result));
         }
 
-        if (order.side == Sell) {
+        if (order->side == Sell) {
             sell_side_.AddOrder(std::move(order));
         } else {
             buy_side_.AddOrder(std::move(order));
