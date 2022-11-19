@@ -34,7 +34,91 @@ wss.on('connection', (ws) => {
                         description: 'Tech company',
                         logo:'',
                         amountShares: 100000123,
-                    }
+                    },
+                    {
+                        ticker: 'AAPL1',
+                        name: 'Apple',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'GOOG1',
+                        name: 'Google',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'MSFT1',
+                        name: 'Microsoft',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'AAPL2',
+                        name: 'Apple',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'GOOG2',
+                        name: 'Google',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'MSFT2',
+                        name: 'Microsoft',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'AAPL3',
+                        name: 'Apple',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'GOOG3',
+                        name: 'Google',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'MSFT3',
+                        name: 'Microsoft',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'AAPL4',
+                        name: 'Apple',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'GOOG4',
+                        name: 'Google',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'MSFT4',
+                        name: 'Microsoft',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
                 ]
             }
         }
@@ -111,7 +195,6 @@ wss.on('connection', (ws) => {
     }, 1000)
 
     ws.on('message', (message, isBinary ) => {
-        console.log(isBinary)
         // const metadata = clients.get(ws);
         if (message instanceof ArrayBuffer) {
             // binary frame
@@ -134,6 +217,7 @@ wss.on('connection', (ws) => {
                     }).finish())
                 }
             }
+            console.log(msg.event?.$case)
 
         } else if (Array.isArray(message)) {
             console.log('array')
