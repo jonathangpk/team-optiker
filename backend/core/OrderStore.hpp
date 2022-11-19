@@ -28,7 +28,7 @@ public:
             std::piecewise_construct, std::make_tuple(user_id), std::make_tuple());
         user_it.first->second.push_back(order_handle);
         order_id_to_order_.emplace(order_id, order_handle);
-        return std::move(order_handle);
+        return order_handle;
     }
 
     const std::vector<OrderHandle>& GetOrdersOfUser(UserId user) {

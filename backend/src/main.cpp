@@ -5,7 +5,7 @@
 
 #include "networking/Session.h"
 #include "common.h"
-
+#include "Users.h"
 
 
 //------------------------------------------------------------------------------
@@ -20,13 +20,16 @@ class listener : public std::enable_shared_from_this<listener>
 {
     net::io_context& ioc_;
     tcp::acceptor acceptor_;
+    Users* users_;
 
 public:
     listener(
             net::io_context& ioc,
-            tcp::endpoint endpoint)
+            tcp::endpoint endpoint,
+            Users* users)
             : ioc_(ioc)
             , acceptor_(ioc)
+            , users_(users)
     {
         beast::error_code ec;
 
@@ -93,7 +96,7 @@ private:
         else
         {
             // Create the session and run it
-            std::make_shared<session>(std::move(socket))->run();
+            std::make_shared<session>(std::move(socket), users_)->run();
         }
 
         // Accept another connection
@@ -118,11 +121,13 @@ int main(int argc, char* argv[])
     auto const port = static_cast<unsigned short>(std::atoi(argv[2]));
     auto const threads = std::max<int>(1, std::atoi(argv[3]));
 
+    Users users;
+
     // The io_context is required for all I/O
     net::io_context ioc{threads};
 
     // Create and launch a listening port
-    std::make_shared<listener>(ioc, tcp::endpoint{address, port})->run();
+    std::make_shared<listener>(ioc, tcp::endpoint{address, port}, &users)->run();
 
     // Run the I/O service on the requested number of threads
     std::vector<std::thread> v;
