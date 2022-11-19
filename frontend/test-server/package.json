@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated --ts_proto_opt=esModuleInterop=true --proto_path ./../../ --ts_proto_opt=oneof=unions generated/events.proto"
+        "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated --ts_proto_opt=esModuleInterop=true --proto_path ./../../shared --ts_proto_opt=oneof=unions events.proto"
     },
     "author": "",
     "license": "ISC",

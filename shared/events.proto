@@ -40,8 +40,8 @@ message Listing {
   int64 price = 6;
   int64 ask_price = 7;
   int64 bid_price = 8;
-  map<int64, uint64> order_book = 10;
-  map<uint32, int64> price_history = 11; 
+  map<int64, uint64> order_book = 10; // price -> amount
+  map<uint32, int64> price_history = 11;  // unix timestamp -> price
 }
 
 // Client
@@ -159,4 +159,3 @@ message ServerMessage {
     Orders orders = 6;
   }
 }
-

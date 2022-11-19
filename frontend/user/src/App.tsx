@@ -2,12 +2,14 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { createClient } from './state/client';
+import { PriceChart } from './components/PriceChart';
 
 function App() {
 
   const [client, setClient] = React.useState(createClient());
   return (
     <div className="App">
+      <PriceChart priceHistory={[]} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

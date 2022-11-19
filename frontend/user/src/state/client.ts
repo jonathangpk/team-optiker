@@ -1,4 +1,4 @@
-import { ServerMessage } from "../generated/events";
+import { ClientMessage, OrderType, ServerMessage } from "../generated/events";
 
 
 
@@ -28,7 +28,22 @@ export function createClient() {
       const message = ServerMessage.decode(data)
       console.log(message)
       console.log(message.event?.$case)
-
+      const msg = ClientMessage.encode({
+        event: {
+          $case: 'placeOrder',
+          placeOrder: {
+            amount: 100,
+            price: 100,
+            ticker: 'AAPL',
+            type: OrderType.ASK
+          }
+        }
+      }).finish()
+      setTimeout(() => {
+        ws.send(msg.buffer)
+        console.log('sent')
+      }, 1000)
+      
     } else {
       // text frame
       console.log('wrong ws format')
