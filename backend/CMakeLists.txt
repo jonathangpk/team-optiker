@@ -41,6 +41,7 @@ add_custom_command(
 
 set(MAIN_SOURCES
     src/main.cpp
+    src/networking/Users.cpp
     events.pb.cc)
 
 set(TOOLS_SOURCES

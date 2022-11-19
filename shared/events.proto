@@ -158,6 +158,11 @@ message Orders {
   repeated InfoOrder orders = 1;
 }
 
+// Error messages for both Client and Server.
+message Error {
+    string error = 1;
+}
+
 message ClientMessage {
   oneof event {
     SubscribeListing subscribe_listing = 1;
@@ -171,8 +176,10 @@ message ClientMessage {
     GetOrders get_orders = 9;
     Register register = 10;
     Login login = 11;
+    Error error = 12;
   }
 }
+
 
 message ServerMessage {
   oneof event {
@@ -183,5 +190,6 @@ message ServerMessage {
     Positions positions = 5;
     Orders orders = 6;
     AuthToken auth_token = 7;
+    Error error = 8;
   }
 }
