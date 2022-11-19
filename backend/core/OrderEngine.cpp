@@ -1,20 +1,30 @@
 #include "OrderEngine.hpp"
 
 OrderEngine::OrderEngine(
-        std::function<void(const OrderEngineResult&)> )  {
-//    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
-//        symbol_to_context_.push_back(new SymbolContext(call_back));
-//    }
+        std::function<void(const OrderEngineResult&)>call_back )  {
+   for (size_t i = 0; i < NUM_SYMBOLS; i++) {
+       symbol_to_context_.push_back(new SymbolContext(call_back));
+   }
 
 }
 
-// OrderEngine::~OrderEngine() {
-//     for (size_t i = 0; i < NUM_SYMBOLS; i++) {
-//         symbol_to_context_[i]->thread_.join();
-//         delete symbol_to_context_[i];
-//     }
+OrderEngine::~OrderEngine() {
+    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
+        delete symbol_to_context_[i];
+    }
 
-// }
+}
+
+StatusOr<std::pair<Price,Price>,OrderEngineStatus>
+OrderEngine::GetBuyAndSellPrice(const std::string& symbol) {
+    auto symbols_it = STRING_TO_SYMBOL.find(symbol);
+    if (symbols_it == STRING_TO_SYMBOL.end()) {
+        // Symbol not found 
+        return SYMBOL_NOT_FOUND;
+    }
+    auto sym = symbols_it->second;
+    return symbol_to_context_[sym]->GetBuyAndSellPrice();
+}
 
 OrderEngineStatus OrderEngine::CreateLimitOrder(
         UserId user, const std::string& symbol, Side side, Price price, Amount amount) {

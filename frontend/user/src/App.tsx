@@ -13,6 +13,8 @@ import { News, NewsPopup } from './pages/News';
 import { ListingDetail } from './pages/ListingDetail';
 import { AuthState } from './state/authStore';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { OrderView } from './pages/OrderView';
+import { BuyOrSell, ExchangeView } from './pages/ExchangeView';
 
 
 function useInit() {
@@ -62,6 +64,18 @@ const router = createBrowserRouter([
   {
     path: '/listing/:id',
     element: <ListingDetail />
+  },
+  {
+    path: '/listing/:id/buy',
+    element: <ExchangeView type="buy" />
+  },
+  {
+    path: '/listing/:id/sell',
+    element: <ExchangeView type="sell" />
+  },
+  {
+    path: '/order/:id',
+    element: <OrderView />
   },
   {
     path: '/news',

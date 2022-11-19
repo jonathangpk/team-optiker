@@ -6,14 +6,13 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InfoIcon from '@mui/icons-material/Info';
 
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ListItemButton from '@mui/material/ListItemButton';
 import { useStore } from '../state/store';
 
 
-const dummy_data : IListing[] = [
+const dummy_data: IListing[] = [
   {
     name: "Tesla",
     abbr: "TSX",
@@ -28,13 +27,23 @@ const dummy_data : IListing[] = [
     name: "TUM",
     abbr: "TUM",
     price: 95234,
+  },
+  {
+    name: "Wakanda",
+    abbr: "WAK",
+    price: 4324,
+  },
+  {
+    name: "Narnia",
+    abbr: "NAR",
+    price: 72,
   }
 ]
 
 interface IListing {
-	name: string;
-	abbr: string;
-	price: number;
+  name: string;
+  abbr: string;
+  price: number;
 
 }
 
@@ -43,7 +52,7 @@ interface ListingsProps {
 }
 
 export function ListingsComponent(props: ListingsProps) {
-	// const { listings } = props;
+  // const { listings } = props;
   const store = useStore();
   console.log(store)
   const listings = dummy_data;
@@ -51,22 +60,22 @@ export function ListingsComponent(props: ListingsProps) {
 
 
 
-	return (
-		<List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-			{
-				store.staticListings.map(lst =>
-          <React.Fragment>
-					<ListItemButton
-						key={lst.ticker}
-						alignItems="flex-start"
-            onClick={() => {
-              navigate(`/listing/${lst.ticker}`);
-            }}
-					>
+  return (
+    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      {
+        store.staticListings.map(lst =>
+          <>
+            <ListItemButton
+              key={lst.ticker}
+              alignItems="flex-start"
+              onClick={() => {
+                navigate(`/listing/${lst.ticker}`);
+              }}
+            >
 
-						{/* <ListItemAvatar>
-							<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-						</ListItemAvatar> */}
+              {/* <ListItemAvatar>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              </ListItemAvatar> */}
               <ListItemText
                 primary={
                   <Typography
@@ -75,25 +84,16 @@ export function ListingsComponent(props: ListingsProps) {
                     variant="h6"
                     color="text.primary"
                   >
-                    {lst.name}
-                  </Typography>}
-                secondary={ 
-                    <Typography
-                      sx={{ display: 'inline' }}
-                      component="span"
-                      variant="subtitle1"
-                      color="text.secondary"
-                    >
-                      { " — " + lst.ticker}
-                      {store.listingsWithPrice[lst.ticker]?.price}
-                    </Typography>
+                    {" — " + lst.ticker}
+                    {store.listingsWithPrice[lst.ticker]?.price}
+                  </Typography >
                 }
               />
-					</ListItemButton>
-          <Divider component="li" />
-          </React.Fragment>
-				)
-			}
-		</List>
-	);
+            </ListItemButton >
+            <Divider component="li" />
+          </>
+        )
+      }
+    </List >
+  );
 }
