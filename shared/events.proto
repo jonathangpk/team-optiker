@@ -22,100 +22,29 @@ message AuthToken {
 }
 
 /**
-  Events
+  News
 */
+
+// Defines what options a user has for a given event
 message NewsAction {
   string name = 1;
   string description = 2;
 }
-
-message NewNews {
+// Notification when a new news event was created
+message News {
   string title = 1;
   string description = 2;
   repeated NewsAction actions = 3;
 }
-  
-message NewsItem {
-  string title = 1;
-  string description = 2;
-}
 
-message News {
-  repeated NewsItem news = 1;
+message NewsList {
+  repeated News news = 1;
 }
 
 
 /**
-  Listings
+  Static Listings
 */
-
-// Client
-message SubscribeListing {
-  string ticker = 1;
-}
-
-// Client
-message UnsubscribeListing {
-  string ticker = 1;
-}
-
-// Server
-message ListingOrderBook {
-  string ticker = 1;
-  map<int64, uint64> order_book_bid = 9; // price -> amount
-  map<int64, uint64> order_book_ask = 10; // price -> amount
-  map<uint32, int64> price_history = 11;  // unix timestamp -> price
-}
-
-// Client
-message SubscribeListingUpdates {}
-
-// Client
-message UnsubscribeListingUpdates {}
-
-message DynamicListing {
-  string ticker = 1;
-  int64 price = 2;
-  uint64 volume = 3;
-  int64 bid_price = 4;
-  int64 ask_price = 5;
-}
-// Server
-message ListingUpdates {
-  repeated DynamicListing listings = 1;
-}
-
-/**
-  Orders
-*/
-
-
-enum OrderType {
-  ASK = 0;
-  BID = 1;
-}
-
-// Client
-message PlaceOrder {
-  OrderType type = 1;
-  string ticker = 2;
-  int64 price = 3;
-  uint64 amount = 4;
-}
-// Client
-message CancelOrder {
-  string id = 1;
-}
-
-// Server
-message OrderFullfilled {}
-
-/**
-  State requests
-*/
-
-// Client
-message GetListings {}
 
 message StaticListing {
   string ticker = 1;
@@ -129,22 +58,107 @@ message Listings {
   repeated StaticListing listings = 1;
 }
 
-// Client
-message GetPositions {}
+/**
+  Listing Prices
+  */
 
-message InfoPosition {
+// Client
+// Subscribe to a the listings orderbook and price history
+message SubscribeListingOrderbook {
   string ticker = 1;
-  string amount = 2;
-  int64 price = 3;
+}
+
+// Client
+message UnsubscribeListingOrderbook {
+  string ticker = 1;
+}
+
+// Server
+// Sends the current orderbook and price history of a listing
+message ListingOrderBook {
+  string ticker = 1;
+  map<int64, uint64> order_book_bid = 9; // price -> amount
+  map<int64, uint64> order_book_ask = 10; // price -> amount
+  map<uint32, int64> price_history = 11;  // unix timestamp -> price
+}
+
+
+message ListingPrice {
+  string ticker = 1;
+  int64 price = 2;
+  uint64 volume = 3;
+  int64 bid_price = 4;
+  int64 ask_price = 5;
 }
 // Server
-message Positions {
-  repeated InfoPosition positions = 1;
+// Server sends by default to all clients the price updates of all listings
+message ListingPrices {
+  repeated ListingPrice listings = 1;
 }
 
-// Client
-message GetOrders {}
+/**
+  Orders
+*/
 
+
+enum OrderType {
+  ASK = 0;
+  BID = 1;
+}
+
+enum OrderUpdateType {
+  Filled = 0;
+  PartiallyFilled = 1;
+  Cancelled = 2;
+}
+
+
+// Client
+// Client places order
+message PlaceOrder {
+  OrderType type = 1;
+  string ticker = 2;
+  int64 price = 3;
+  uint64 amount = 4;
+}
+// Client
+// Client cancels order
+message CancelOrder {
+  string id = 1;
+}
+
+
+// Server
+// When a order was created, this is sent to the client
+message OrderCreated {
+  string id = 1;
+  OrderType type = 2;
+  string ticker = 3;
+  int64 price = 4;
+  uint64 amount = 5;
+}
+
+// Server
+// Send to client when order is partially fullfilled
+message OrderPartiallyFullfilled {
+  string id = 1;
+  uint64 amount = 2;
+}
+
+// Server
+// Send to client when order is fully fullfilled
+message OrderFullfilled {
+  string id = 1;
+}
+
+
+// Server
+// Send to client when order is cancelled
+message OrderCanceled {
+  string id = 1;
+}
+
+// Represents order details used when fetching all orders on startup
 message InfoOrder {
   string id = 1;
   OrderType type = 2;
@@ -154,34 +168,67 @@ message InfoOrder {
 }
 
 // Server
+// Orders pushed initially
 message Orders {
   repeated InfoOrder orders = 1;
 }
 
+
+/**
+  Positions
+*/
+
+// Client
+message GetPositions {}
+
+message InfoPosition {
+  string ticker = 1;
+  string amount = 2;
+  int64 price = 3;
+}
+
+// Server
+message Positions {
+  repeated InfoPosition positions = 1;
+}
+
+
+/** 
+  Aggregated Messages
+*/
+
 message ClientMessage {
   oneof event {
-    SubscribeListing subscribe_listing = 1;
-    UnsubscribeListing unsubscribe_listing = 2;
-    SubscribeListingUpdates subscribe_listing_updates = 3;
-    UnsubscribeListingUpdates unsubscribe_listing_updates = 4;
+    // Auth
+    Login login = 11;
+    Register register = 10;
+    // Orderbook/price history
+    SubscribeListingOrderbook subscribe_listing = 1;
+    UnsubscribeListingOrderbook unsubscribe_listing = 2;
+    // Orders
     PlaceOrder place_order = 5;
     CancelOrder cancel_order = 6;
-    GetListings get_listings = 7;
-    GetPositions get_positions = 8;
-    GetOrders get_orders = 9;
-    Register register = 10;
-    Login login = 11;
   }
 }
 
 message ServerMessage {
   oneof event {
-    NewNews new_event = 1;
-    Listings listings = 2;
-    ListingUpdates listing_updates = 3;
-    OrderFullfilled order_fullfilled = 4;
-    Positions positions = 5;
-    Orders orders = 6;
-    AuthToken auth_token = 7;
+    // Auth
+    AuthToken auth_token = 1;
+    // News
+    News new_news = 2;
+    NewsList news_list = 3;
+    // Static Listings List
+    Listings listings = 4;
+    // Listing List Prices
+    ListingPrices listing_updates = 5;
+    // Orders
+    OrderCreated order_created = 6;
+    OrderPartiallyFullfilled order_partially_fullfilled = 7;
+    OrderFullfilled order_fullfilled = 8;
+    OrderCanceled order_canceld = 9;
+    Orders orders = 10;
+    // Positions
+    Positions positions = 11;
   }
 }
