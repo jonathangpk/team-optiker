@@ -177,6 +177,7 @@ public:
         case event::ClientMessage::kError:
             break;
         }
+        in_.consume(in_.size());
 
         do_read();
     }
@@ -193,6 +194,7 @@ private:
     void handle_register(const event::Register &reg) {
         std::cout << "handle_register\n";
         std::string token = users_->register_user(reg.name());
+        cur_user_ = users_->login(token);
 
         event::ServerMessage sm;
         auto *auth_token = new event::AuthToken;
