@@ -99,21 +99,21 @@ export function OrderListComponent(props: { selector: "orders" | "transactions" 
                 selector === "orders"
                   ?
                   <TableRow>
-                    <TableCell>Type</TableCell>
-                    <TableCell>User</TableCell>
-                    <TableCell align="right">Listing</TableCell>
-                    <TableCell align="right">Volume</TableCell>
-                    <TableCell align="right">Price</TableCell>
-                    <TableCell align="right">Total</TableCell>
+                    <TableCell><Typography variant="body1">Type</Typography></TableCell>
+                    <TableCell><Typography variant="body1">User</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Listing</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Volume</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Price</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Total</Typography></TableCell>
                   </TableRow>
                   :
                   <TableRow>
-                    <TableCell>From</TableCell>
-                    <TableCell>To</TableCell>
-                    <TableCell align="right">Listing</TableCell>
-                    <TableCell align="right">Volume</TableCell>
-                    <TableCell align="right">Price</TableCell>
-                    <TableCell align="right">Total</TableCell>
+                    <TableCell><Typography variant="body1">From</Typography></TableCell>
+                    <TableCell><Typography variant="body1">To</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Listing</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Volume</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Price</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="body1">Total</Typography></TableCell>
                   </TableRow>
               }
             </TableHead>
