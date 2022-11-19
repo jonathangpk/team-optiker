@@ -97,6 +97,10 @@ export function handleServerMessage(store: Store, message: ServerMessage) {
     case 'newsList':
       return
     case 'error':
+      if (event.error.error === 'Error: Invalid Token.') {
+        window.localStorage.removeItem('token')
+        window.location.reload()
+      }
       return
     // default:
     //   exhausted(event.$case)
