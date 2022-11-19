@@ -3,6 +3,7 @@ import { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
 const series = [{
+  name: "Stock value",
   data: [
     [1327359600000, 30.95],
     [1327446000000, 31.34],
@@ -288,43 +289,16 @@ const options = {
     type: 'area' as 'area',
     height: 350,
     zoom: {
-      autoScaleYaxis: true
+      enabled: false,
+      autoScaleYaxis: false
+    },
+    toolbar: {
+      show: false,
     }
   },
   colors: ["#03610c"],
-  annotations: {
-    yaxis: [{
-      y: 30,
-      borderColor: '#999',
-      label: {
-        show: true,
-        text: 'Support',
-        style: {
-          color: "#fff",
-          background: '#00E396'
-        }
-      }
-    }],
-    xaxis: [{
-      x: new Date('14 Nov 2012').getTime(),
-      borderColor: '#999',
-      yAxisIndex: 0,
-      // label: {
-      //   show: true,
-      //   text: 'Rally',
-      //   style: {
-      //     color: "#fff",
-      //     background: '#775DD0'
-      //   }
-      // }
-    }]
-  },
   dataLabels: {
     enabled: false
-  },
-  markers: {
-    size: 0,
-    style: 'hollow',
   },
   xaxis: {
     type: 'datetime' as 'datetime',
@@ -404,7 +378,8 @@ export const PriceGraph = () => {
   return (
 
     <Box>
-      <Toolbar>
+      {/* <Toolbar>
+
         <Button
           variant="text"
           onClick={() => {
@@ -423,7 +398,7 @@ export const PriceGraph = () => {
         >
           6M
         </Button>
-      </Toolbar>
+      </Toolbar> */}
       <ReactApexChart options={options} series={series} type="area" height={350} />
     </Box>
   );
