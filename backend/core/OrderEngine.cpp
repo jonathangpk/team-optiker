@@ -1,20 +1,19 @@
 #include "OrderEngine.hpp"
 
 OrderEngine::OrderEngine(
-        std::function<void(const OrderEngineResult&)> )  {
-//    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
-//        symbol_to_context_.push_back(new SymbolContext(call_back));
-//    }
+        std::function<void(const OrderEngineResult&)>call_back )  {
+   for (size_t i = 0; i < NUM_SYMBOLS; i++) {
+       symbol_to_context_.push_back(new SymbolContext(call_back));
+   }
 
 }
 
-// OrderEngine::~OrderEngine() {
-//     for (size_t i = 0; i < NUM_SYMBOLS; i++) {
-//         symbol_to_context_[i]->thread_.join();
-//         delete symbol_to_context_[i];
-//     }
+OrderEngine::~OrderEngine() {
+    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
+        delete symbol_to_context_[i];
+    }
 
-// }
+}
 
 StatusOr<std::pair<Price,Price>,OrderEngineStatus>
 OrderEngine::GetBuyAndSellPrice(const std::string& symbol) {
