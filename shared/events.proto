@@ -192,6 +192,22 @@ message Positions {
   repeated InfoPosition positions = 1;
 }
 
+/**
+  Market Log
+*/
+
+message Trade {
+  string from = 1;
+  string to = 2;
+  int64 price = 3;
+  uint64 amount = 4;
+  string ticker = 5;
+}
+
+message Trades {
+  repeated Trade trades = 1;
+}
+
 
 /** 
   Aggregated Messages
