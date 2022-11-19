@@ -45,7 +45,7 @@ export function NewsComponent() {
 }
 
 export const News = () => (
-  <Container title="News" navigationPosition="news" backLocation=''>
+  <Container title="News" navigationPosition="news">
     <NewsComponent />
   </Container>
 )

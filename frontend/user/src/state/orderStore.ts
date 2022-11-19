@@ -60,13 +60,14 @@ export const orderSlice: StateCreator<Store, [], [], OrderSlice> = (set, get) =>
   orderPartiallyFullfilled: (partialFullfilled: IOrderPartiallyFullfilled) => {
     const orders = get().orders
     const order = orders[partialFullfilled.id]
+
     if (!order) console.log('Got Partially Fullfullid even though order does not exist anymore')
     return set({
       orders: {
         ...orders,
         [order.id]: {
           ...order,
-          amount: order.amount - partialFullfilled.amount,
+          amount: Math.min(order.amount, partialFullfilled.amount),
         },
       }
     })
