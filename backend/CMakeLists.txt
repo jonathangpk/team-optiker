@@ -54,6 +54,7 @@ set(CORE_SOURCES
     core/OrderEngine.cpp
     core/OrderBookSide.hpp
     core/MatchingEngine.hpp
+    core/ExchangeController.cpp
     )
 
 set(TEST_SOURCES

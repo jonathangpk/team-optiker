@@ -108,6 +108,16 @@ public:
                         shared_from_this()));
     }
 
+    void send_error(const char* str) {
+        event::ServerMessage sm;
+        auto *error = new event::Error;
+        error->set_error(str);
+        sm.set_allocated_error(error);
+
+        out_ = sm.SerializeAsString();
+        send_message();
+    }
+
     void
     do_read()
     {
@@ -141,24 +151,14 @@ public:
             break;
         case event::ClientMessage::kUnsubscribeListing:
             break;
-        // case event::ClientMessage::kSubscribeListingUpdates:
-        //     break;
-        // case event::ClientMessage::kUnsubscribeListingUpdates:
-        //     break;
         case event::ClientMessage::kPlaceOrder:
+//            handle_place_order(msg.place_order());
             break;
         case event::ClientMessage::kCancelOrder:
             break;
-        // case event::ClientMessage::kGetListings:
-        //     break;
-        // case event::ClientMessage::kGetPositions:
-        //     break;
-        // case event::ClientMessage::kGetOrders:
-        //     break;
-        case event::ClientMessage::kRegister: {
+        case event::ClientMessage::kRegister:
             handle_register(msg.register_());
             break;
-        }
         case event::ClientMessage::kLogin:
             handle_login(msg.login());
             break;
@@ -179,6 +179,7 @@ public:
             return fail(ec, "write");
     }
 
+private:
     void handle_register(const event::Register &reg) {
         std::cout << "handle_register\n";
         std::string token = users_->register_user(reg.name());
@@ -214,6 +215,19 @@ public:
         out_ = sm.SerializeAsString();
         send_message();
     }
+
+//    void handle_place_order(const event::PlaceOrder & order) {
+//        std::cout << "handle place order\n";
+//        if (!cur_user_.has_value()) {
+//            send_error("PERMISSION DENIED. Not logged in.");
+//            return;
+//        }
+//
+//  //      TODO: Do call.
+//        event::ServerMessage sm;
+//        out_ = sm.SerializeAsString();
+//        send_message();
+//    }
 };
 
 

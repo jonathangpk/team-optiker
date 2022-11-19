@@ -20,7 +20,7 @@ enum OrderEngineStatus {
 };
 
 class OrderEngine {
-
+public:
     OrderEngine(std::function<void(const OrderEngineResult&)> call_back);
 
     using OrderEngineResultOrStatus
