@@ -4,6 +4,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SubjectIcon from '@mui/icons-material/Subject';
 import { OrderGraph } from "../components/OrderGraph";
+import FeedIcon from '@mui/icons-material/Feed';
 import { OrderListComponent } from "../components/OrderListComponent";
 
 function renderContent(page: string) {
@@ -12,7 +13,8 @@ function renderContent(page: string) {
         return (
           <>
             <OrderGraph />
-            <OrderListComponent />
+            <OrderListComponent selector="orders"/>
+            <OrderListComponent selector="transactions"/>
           </>
         );
 
@@ -47,7 +49,7 @@ export function AdminPage() {
         >
           <BottomNavigationAction icon={<ShowChartIcon fontSize="large" />} label="Home" value="home" />
           {/* <BottomNavigationAction icon={<ShowChartIcon fontSize="large" />} label="Graphs" value="graphs" /> */}
-          <BottomNavigationAction icon={<SubjectIcon fontSize="large" />} label="Orders" value="orders" />
+          <BottomNavigationAction icon={<FeedIcon fontSize="large" />} label="News" value="news" />
         </BottomNavigation>
       </Paper>
     </Box>

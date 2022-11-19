@@ -1,4 +1,4 @@
-import { AppBar, BottomNavigation, BottomNavigationAction, Box, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography } from "@mui/material";
+import { AppBar, BottomNavigation, BottomNavigationAction, Box, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
@@ -12,104 +12,145 @@ interface ContainerProps {
   navigationPosition: string,
 }
 
-type ListEntryRequest = {
-  type: "bid" | "ask";
-  user: string;
-}
-
-type ListEntryTransaction = {
-  type: "tsx";
-  from: string;
-  to: string;
-}
-
-type ListEntry = (ListEntryRequest | ListEntryTransaction) & {
+type ListEntryBase = {
   listing: string,
   orderId: number,
   price: number,
-  amount: number
+  volume: number
 }
 
+type ListEntryOrders = ListEntryBase & {
+  type: "bid" | "ask";
+  user?: string;
+  from?: string;
+  to?: string;
+}
 
-function nextEntry () : ListEntry {
+type ListEntryTransactions = ListEntryBase & {
+  type: "tsx";
+  user?: string;
+  from?: string;
+  to?: string;
+}
+
+type ListType = ListEntryOrders | ListEntryTransactions;
+
+
+function nextEntry(selector: "orders" | "transactions") {
   const orderId = Math.round(Math.random() * 42398472);
-  const amount = Math.round(Math.random() * 23423);
+  const volume = Math.round(Math.random() * 23423);
   const price = Math.random() * 2342553;
-  const listing = "TSX";
+  const listing = "APX";
   let type;
 
-  if (Math.random() < 0.4) {
+  if (selector === "transactions") {
     type = "tsx"
     const from = `${Math.round(Math.random() * 14)}`;
     const to = `${Math.round(Math.random() * 14)}`;
     return ({
-      type: "tsx" as "tsx", from, to, amount, price, listing, orderId
+      type: "tsx" as "tsx", from, to, volume, price, listing, orderId
     });
   } else {
     const user = `${Math.round(Math.random() * 14)}`;
     if (Math.random() < 0.5) {
       return ({
-        type: "bid" as "bid", user, amount, price, listing, orderId
+        type: "bid" as "bid", user, volume, price, listing, orderId
       });
     } else {
-      return({
-        type: "ask" as "ask", user, amount, price, listing, orderId
-      }); 
+      return ({
+        type: "ask" as "ask", user, volume, price, listing, orderId
+      });
     }
   }
 }
 
-export function OrderListComponent() {
-  const [list, setList] = useState<ListEntry[]>([]);
+export function OrderListComponent(props: { selector: "orders" | "transactions" }) {
+  const [list, setList] = useState<ListType[]>([]);
+  const { selector } = props;
 
   setTimeout(() => {
-    const newList = list.slice(0, 20);
-    newList.unshift(nextEntry());
-    setList(newList);
-  }, 500);
+    setList([nextEntry(selector), ...list.slice(0, 9)]);
+  }, 1000);
+
 
   return (
     <Box sx={{
-      width: "50%"
+      width: "45%",
+      float: selector === "orders" ? "left" : "right",
+      margin: "20px",
+      height: 100
     }}>
-      <List>
-        {
-          list.map(entry =>
-            <>
-              <ListItemButton
-                key={entry.orderId}
-                alignItems="flex-start"
-              // onClick={() => {
-              //   navigate(`/listing/${lst.ticker}`);
-              // }}
-              >
-                <ListItemText
-                  primary={
-                    <span>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        variant="body1"
-                        color="text.primary"
+      <Box sx={{height: 50, marginTop: -5}}>
+        <Typography
+          sx={{ display: 'inline' }}
+          variant="h6"
+          color="text.primary"
+          style={{ top: "20px", position: "relative" }}
+          marginBottom={50}
+        >
+          {selector === "orders" ? "Orders" : "Transactions"}
+        </Typography >
+      </Box>
+      <Box sx={{height: 200}}>
+        <TableContainer >
+          <Table size="small" aria-label="a dense table" padding="none">
+            <TableHead>
+              {
+                selector === "orders"
+                  ?
+                  <TableRow>
+                    <TableCell>Type</TableCell>
+                    <TableCell>User</TableCell>
+                    <TableCell align="right">Listing</TableCell>
+                    <TableCell align="right">Volume</TableCell>
+                    <TableCell align="right">Price</TableCell>
+                    <TableCell align="right">Total</TableCell>
+                  </TableRow>
+                  :
+                  <TableRow>
+                    <TableCell>From</TableCell>
+                    <TableCell>To</TableCell>
+                    <TableCell align="right">Listing</TableCell>
+                    <TableCell align="right">Volume</TableCell>
+                    <TableCell align="right">Price</TableCell>
+                    <TableCell align="right">Total</TableCell>
+                  </TableRow>
+              }
+            </TableHead>
+            <TableBody>
+              {list.map((row) => (
+                <>
+                  {
+                    selector === "orders"
+                      ?
+                      <TableRow
+                        key={row.orderId}
                       >
-                        {entry.type.toUpperCase()}
-                      </Typography >
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        variant="body1"
-                        color="text.secondary"
-                        // style={{ top: "20px", position: "relative" }}
+                        <TableCell>{row.type}</TableCell>
+                        <TableCell>{row.user}</TableCell>
+                        <TableCell align="right">{row.listing}</TableCell>
+                        <TableCell align="right">{row.volume}</TableCell>
+                        <TableCell align="right">{row.price.toFixed(2)}</TableCell>
+                        <TableCell align="right">{(row.volume * row.price).toFixed(2)}</TableCell>
+                      </TableRow>
+                      :
+                      <TableRow
+                        key={row.orderId}
                       >
-                        {` - ${entry.type === "tsx" ? `${entry.from} -> ${entry.to}` : entry.user} ${entry.listing} ${entry.amount.toFixed(2)} ${entry.price.toFixed(2)}`}
-                      </Typography >
-                    </span>
-
+                        <TableCell>{row.from}</TableCell>
+                        <TableCell>{row.to}</TableCell>
+                        <TableCell align="right">{row.listing}</TableCell>
+                        <TableCell align="right">{row.volume}</TableCell>
+                        <TableCell align="right">{row.price.toFixed(2)}</TableCell>
+                        <TableCell align="right">{(row.volume * row.price).toFixed(2)}</TableCell>
+                      </TableRow>
                   }
-                />
-              </ListItemButton>
-            </>
-          )
-        }
-      </List>
+                </>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 }
