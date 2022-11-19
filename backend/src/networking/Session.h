@@ -24,7 +24,9 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 class session : public std::enable_shared_from_this<session>
 {
     websocket::stream<beast::tcp_stream> ws_;
-    beast::flat_buffer buffer_;
+    beast::flat_buffer in_;
+    std::string out_;
+
 
 public:
     // Take ownership of the socket
@@ -75,14 +77,18 @@ public:
     void
     on_accept(beast::error_code ec)
     {
+        ws_.binary(true);
         if(ec)
             return fail(ec, "accept");
 
         event::ServerMessage sm;
-        event::NewEvent event;
-        event.set_title("Test");
-        event.set_description("Testing");
-        sm.set_allocated_new_event(&event);
+        event::NewEvent *event = new event::NewEvent;
+        event->set_title("Test");
+        event->set_description("Testing");
+        event->add_actions();
+        sm.set_allocated_new_event(event);
+
+        out_ = sm.SerializeAsString();
 
         send_message();
 
@@ -90,10 +96,9 @@ public:
         do_read();
     }
 
-    void send_message(std::string &msg) {
-        msg
+    void send_message() {
         ws_.async_write(
-                buffer_,
+                net::buffer(out_),
                 beast::bind_front_handler(
                         &session::on_write,
                         shared_from_this()));
@@ -102,13 +107,12 @@ public:
     void
     do_read()
     {
-        std::cout << "here" << std::endl;
         // Read a message into our buffer
-//        ws_.async_read(
-//                in_buffer_,
-//                beast::bind_front_handler(
-//                        &session::on_read,
-//                        shared_from_this()));
+        ws_.async_read(
+                in_,
+                beast::bind_front_handler(
+                        &session::on_read,
+                        shared_from_this()));
     }
 
     void
@@ -125,12 +129,10 @@ public:
         if(ec)
             return fail(ec, "read");
 
+        event::ClientMessage msg;
+        msg.ParseFromArray(in_.cdata().data(), bytes_transferred);
 
-//        event::ClientMessage msg;
-//        msg.ParseFromArray(in_buffer_.cdata().data(), bytes_transferred);
-//
-//        std::cout << msg.place_order().ticker() << std::endl;
-
+        std::cout << "received " << msg.place_order().ticker() << std::endl;
     }
 
     void
@@ -142,12 +144,6 @@ public:
 
         if(ec)
             return fail(ec, "write");
-
-        // Clear the buffer
-//        in_buffer_.consume(in_buffer_.size());
-
-        // Do another read
-        do_read();
     }
 };
 
