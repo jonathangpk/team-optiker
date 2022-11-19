@@ -103,6 +103,7 @@ message ListingPrices {
 enum OrderType {
   ASK = 0;
   BID = 1;
+  IOC = 2; // Immediate or Cancel
 }
 
 enum OrderUpdateType {
@@ -141,8 +142,8 @@ message OrderCreated {
 // Send to client when order is partially fullfilled
 message OrderPartiallyFullfilled {
   string id = 1;
-  // describse how much is already fullfilled
-  uint64 amount = 2;
+  // describse how much is left
+  uint64 amount_left = 2;
 }
 
 // Server
