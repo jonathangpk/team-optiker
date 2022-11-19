@@ -1,43 +1,50 @@
 #include "OrderEngine.hpp"
 
-OrderEngine::OrderEngine() : next_order_id_(0) {
+OrderEngine::OrderEngine() {
 
 }
 
-OrderEngine::OrderEngineResult OrderEngine::CreateLimitOrder(
+OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateLimitOrder(
         UserId user, const std::string& symbol, Side side, Price price, Amount amount) {
-    
 
-    auto order_book_it = symbold_to_order_book_.find(symbol);
-    if (order_book_it == symbold_to_order_book_.end()) {
+
+    auto symbols_it = STRING_TO_SYMBOL.find(symbol);
+    if (symbols_it == STRING_TO_SYMBOL.end()) {
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
-    OrderId order_id = ++next_order_id_;
-    auto now = std::chrono::system_clock::now();
-    Order order {side, price, amount, user, order_id, now};
+    
+    auto sym = symbols_it->second;
+    auto it = symbold_to_order_book_.find(sym);
+    if(it == symbold_to_order_book_.end()) {
+         // Symbol not found 
+        return SYMBOL_NOT_FOUND;
+    }
+    auto order_handle = order_store_.CreateOrder(user, sym, side, price, amount);
 
-    MatchinEngineResult match = order_book_it->second.AddLimitOrder(order);
-
-    return match;
+    return it->second.AddLimitOrder(order_handle);
 }
 
-OrderEngine::OrderEngineResult OrderEngine::CreateExecuteOrCancelOrder(
+OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateExecuteOrCancelOrder(
             UserId user, const std::string& symbol, Side side, Price price, 
             Amount amount) {
     
 
-    auto order_book_it = symbold_to_order_book_.find(symbol);
-    if (order_book_it == symbold_to_order_book_.end()) {
+    auto symbols_it = STRING_TO_SYMBOL.find(symbol);
+    if (symbols_it == STRING_TO_SYMBOL.end()) {
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
-    OrderId order_id = ++next_order_id_;
-    auto now = std::chrono::system_clock::now();
-    Order order {side, price, amount, user, order_id, now};
+    
+    auto sym = symbols_it->second;
+    auto it = symbold_to_order_book_.find(sym);
+    if(it == symbold_to_order_book_.end()) {
+         // Symbol not found 
+        return SYMBOL_NOT_FOUND;
+    }
 
-    MatchinEngineResult match = order_book_it->second.ExecuteOrCancle(order);
+    auto order_handle = order_store_.CreateOrder(user, sym, side, price, amount);
 
-    return match;
+    return it->second.ExecuteOrCancle(order_handle);
 }
 
