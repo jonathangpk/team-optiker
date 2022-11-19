@@ -24,15 +24,24 @@ message AuthToken {
 /**
   Events
 */
-message EventAction {
+message NewsAction {
   string name = 1;
   string description = 2;
 }
 
-message NewEvent {
+message NewNews {
   string title = 1;
   string description = 2;
-  repeated EventAction actions = 3;
+  repeated NewsAction actions = 3;
+}
+  
+message NewsItem {
+  string title = 1;
+  string description = 2;
+}
+
+message News {
+  repeated NewsItem news = 1;
 }
 
 
@@ -51,16 +60,10 @@ message UnsubscribeListing {
 }
 
 // Server
-message Listing {
+message ListingOrderBook {
   string ticker = 1;
-  string name = 2;
-  string description = 3;
-  string logo = 4;
-  uint64 amount_shares = 5;
-  int64 price = 6;
-  int64 ask_price = 7;
-  int64 bid_price = 8;
-  map<int64, uint64> order_book = 10; // price -> amount
+  map<int64, uint64> order_book_bid = 9; // price -> amount
+  map<int64, uint64> order_book_ask = 10; // price -> amount
   map<uint32, int64> price_history = 11;  // unix timestamp -> price
 }
 
@@ -173,7 +176,7 @@ message ClientMessage {
 
 message ServerMessage {
   oneof event {
-    NewEvent new_event = 1;
+    NewNews new_event = 1;
     Listings listings = 2;
     ListingUpdates listing_updates = 3;
     OrderFullfilled order_fullfilled = 4;
