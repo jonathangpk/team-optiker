@@ -36,6 +36,7 @@ public:
 
     OrderEngineResult ExecuteOrCancle(OrderHandle order) {
         OrderEngineResult result;
+        result.order = *order;
         if (order->side == Sell) {
             result.matching_result = MatchingEngine::Match(buy_side_, order);
         } else {
@@ -68,6 +69,7 @@ public:
     OrderEngineResult AddLimitOrder(OrderHandle order) {
         // Return value compy optimization is going to play here for us.
         OrderEngineResult result;
+        result.order = *order;
         if (order->side == Sell) {
             result.matching_result = MatchingEngine::Match(buy_side_, order);
         } else {

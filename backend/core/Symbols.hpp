@@ -6,6 +6,7 @@
 
 enum Symbol : uint64_t {
     TEST,
+    TSX,
     // Last Symbol dont remove this:
     NUM_SYMBOLS
 };
@@ -13,7 +14,12 @@ enum Symbol : uint64_t {
 
 inline static std::map<std::string,Symbol>  STRING_TO_SYMBOL = {
     {"test", TEST},
-    {"TSX", TEST},
+    {"TSX", TSX},
+};
+
+inline static std::map<Symbol, std::string>  SYMBOL_TO_STRING = {
+        {TEST, "test"},
+        {TSX, "TSX"},
 };
 
 #endif
