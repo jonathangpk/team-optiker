@@ -24,7 +24,8 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 class session : public std::enable_shared_from_this<session>
 {
     websocket::stream<beast::tcp_stream> ws_;
-    beast::flat_buffer buffer_;
+    beast::flat_buffer in_buffer_;
+    std::string out_buffer_;
 
 public:
     // Take ownership of the socket
@@ -78,8 +79,25 @@ public:
         if(ec)
             return fail(ec, "accept");
 
+        event::ServerMessage sm;
+        event::NewEvent event;
+        event.set_title("Test");
+        event.set_description("Testing");
+        sm.set_allocated_new_event(&event);
+
+        std::string msg = sm.SerializeAsString();
+        send_message(msg);
+
         // Read a message
         do_read();
+    }
+
+    void send_message(std::string &msg) {
+        ws_.async_write(
+                boost::asio::buffer(msg),
+                beast::bind_front_handler(
+                        &session::on_write,
+                        shared_from_this()));
     }
 
     void
@@ -87,7 +105,7 @@ public:
     {
         // Read a message into our buffer
         ws_.async_read(
-                buffer_,
+                in_buffer_,
                 beast::bind_front_handler(
                         &session::on_read,
                         shared_from_this()));
@@ -107,14 +125,11 @@ public:
         if(ec)
             return fail(ec, "read");
 
-        ws_.async_write(
-                buffer_.data(),
-                beast::bind_front_handler(
-                        &session::on_write,
-                        shared_from_this()));
 
         event::ClientMessage msg;
-        msg.ParseFromArray(buffer_.cdata().data(), bytes_transferred);
+        msg.ParseFromArray(in_buffer_.cdata().data(), bytes_transferred);
+
+        std::cout << msg.place_order().ticker() << std::endl;
 
     }
 
@@ -129,7 +144,7 @@ public:
             return fail(ec, "write");
 
         // Clear the buffer
-        buffer_.consume(buffer_.size());
+        in_buffer_.consume(in_buffer_.size());
 
         // Do another read
         do_read();
