@@ -10,11 +10,14 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@types/websocket": "^1.0.5",
         "ts-proto": "^1.132.1"
     },
     "dependencies": {
         "@types/node": "^18.11.9",
         "@types/ws": "^8.5.3",
+        "protobufjs": "^7.1.2",
+        "websocket": "^1.0.34",
         "ws": "^8.11.0"
     }
 }
