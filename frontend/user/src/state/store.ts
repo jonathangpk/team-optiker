@@ -2,6 +2,7 @@ import create, { StateCreator } from 'zustand'
 import { MI } from '../util';
 import { InfoPosition, ListingOrderBook, ListingPrice, ListingPrices, StaticListing } from "./../generated/events";
 import { AuthSlice, authSlice } from './authStore';
+import { Client } from './client';
 import { ListingSlice, listingSlice } from './listingStore';
 import { orderSlice, OrderSlice } from './orderStore';
 
@@ -20,11 +21,14 @@ const positionSlice: StateCreator<Store, [], [], PositionSlice> =(set, get) => (
 
 
 
-export type Store = AuthSlice & PositionSlice & ListingSlice & OrderSlice
+export type Store = AuthSlice & PositionSlice & ListingSlice & OrderSlice & {
+  client: Client;
+}
 
 
 export const useStore = create<Store>()((...a) => {
   return {
+    client: new Client(),
     ...authSlice(...a),
     ...positionSlice(...a),
     ...listingSlice(...a),
