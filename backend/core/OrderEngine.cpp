@@ -1,10 +1,13 @@
 #include "OrderEngine.hpp"
 
 OrderEngine::OrderEngine() {
+    // for (const auto&[_, _] : STRING_TO_SYMBOL) {
+
+    // }
 
 }
 
-OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateLimitOrder(
+OrderEngineStatus OrderEngine::CreateLimitOrder(
         UserId user, const std::string& symbol, Side side, Price price, Amount amount) {
 
 
@@ -13,19 +16,14 @@ OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateLimitOrder(
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
-    
     auto sym = symbols_it->second;
-    auto it = symbold_to_order_book_.find(sym);
-    if(it == symbold_to_order_book_.end()) {
-         // Symbol not found 
-        return SYMBOL_NOT_FOUND;
-    }
-    auto order_handle = order_store_.CreateOrder(user, sym, side, price, amount);
+    auto order_handle = order_store_.CreateOrder(user, LIMIT, sym, side, price, amount);
+    symbol_to_context[sym].Append(std::move(order_handle));
 
-    return it->second.AddLimitOrder(order_handle);
+    return ORDER_SUBMITTED;
 }
 
-OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateExecuteOrCancelOrder(
+OrderEngineStatus OrderEngine::CreateExecuteOrCancelOrder(
             UserId user, const std::string& symbol, Side side, Price price, 
             Amount amount) {
     
@@ -37,14 +35,9 @@ OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateExecuteOrCancelOrder(
     }
     
     auto sym = symbols_it->second;
-    auto it = symbold_to_order_book_.find(sym);
-    if(it == symbold_to_order_book_.end()) {
-         // Symbol not found 
-        return SYMBOL_NOT_FOUND;
-    }
+    auto order_handle = order_store_.CreateOrder(user, EXECUTE_OR_CANCLE, sym, side, price, amount);
+    symbol_to_context[sym].Append(std::move(order_handle));
 
-    auto order_handle = order_store_.CreateOrder(user, sym, side, price, amount);
-
-    return it->second.ExecuteOrCancle(order_handle);
+    return ORDER_SUBMITTED;
 }
 

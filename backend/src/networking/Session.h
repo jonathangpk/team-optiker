@@ -141,20 +141,20 @@ public:
             break;
         case event::ClientMessage::kUnsubscribeListing:
             break;
-        case event::ClientMessage::kSubscribeListingUpdates:
-            break;
-        case event::ClientMessage::kUnsubscribeListingUpdates:
-            break;
+        // case event::ClientMessage::kSubscribeListingUpdates:
+        //     break;
+        // case event::ClientMessage::kUnsubscribeListingUpdates:
+        //     break;
         case event::ClientMessage::kPlaceOrder:
             break;
         case event::ClientMessage::kCancelOrder:
             break;
-        case event::ClientMessage::kGetListings:
-            break;
-        case event::ClientMessage::kGetPositions:
-            break;
-        case event::ClientMessage::kGetOrders:
-            break;
+        // case event::ClientMessage::kGetListings:
+        //     break;
+        // case event::ClientMessage::kGetPositions:
+        //     break;
+        // case event::ClientMessage::kGetOrders:
+        //     break;
         case event::ClientMessage::kRegister: {
             handle_register(msg.register_());
             break;
