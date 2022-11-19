@@ -10,7 +10,7 @@ export const OrderView = () => {
 
 
   return (
-    <Container title="Order" navigationPosition="home" backLocation=''>
+    <Container title="Order" navigationPosition="home" >
     </Container>
   );
 }
