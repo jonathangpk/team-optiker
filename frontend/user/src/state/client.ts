@@ -1,16 +1,11 @@
 import { State } from "./state";
 import { ClientMessage, Login, OrderType, Register, ServerMessage } from "../generated/events";
 
-const HOST = 'ws://localhost:8080'
+
 
 // creates websocket connection
 export function createClient() {
-  const ws = new WebSocket(HOST);
-  ws.binaryType = "arraybuffer";
-  ws.onopen = event => {
-    console.log('connected');
-  };
-  return ws
+  
 }
 
 function exhausted(arg: never): never {

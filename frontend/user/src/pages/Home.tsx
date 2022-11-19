@@ -1,13 +1,14 @@
+import { Container } from "../components/Container";
 
 
 interface HomeProps {
 
 }
 
-function Home(props: HomeProps) {
+export function Home(props: HomeProps) {
   return (
-    <div>
+    <Container title="Portfolio">
       Home
-    </div>
+    </Container>
   )
 }

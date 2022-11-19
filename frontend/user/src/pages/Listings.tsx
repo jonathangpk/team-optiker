@@ -3,7 +3,7 @@
 interface ListingsProps {
 
 }
-function Listings(props: ListingsProps) {
+export function Listings(props: ListingsProps) {
   return (
     <div>
       Listings

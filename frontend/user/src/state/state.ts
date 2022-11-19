@@ -1,14 +1,12 @@
 import { Server } from 'http'
 import { Deserializer } from 'v8'
 import create from 'zustand'
+import { client } from '../App'
 import { StaticListing, DynamicListing, ListingOrderBook, Login, Register, ServerMessage, ClientMessage } from '../generated/events'
 import { createClient } from './client'
 
 
 // type PM<T extends > = 
-
-
-export const client = createClient()
 
 
 export enum AuthState {
@@ -30,11 +28,25 @@ export const useStore = create<State>()((set, get) => {
     authenticated: window.localStorage.getItem('token') ? AuthState.tokenAvailable : AuthState.notRegistered,
     tryLogin: token => {
       if (token) {
-        client.send(Login.encode({ token }).finish())
+        client.send(ClientMessage.encode({ 
+          event: {
+            $case: 'login',
+            login: {
+              token,
+            }
+          },
+        }).finish())
       }
     },
     register: (name: string) => {
-      client.send(Register.encode({ name }).finish())
+      client.send(ClientMessage.encode({ 
+        event: {
+          $case: 'register',
+          register: {
+            name,
+          }
+        }
+      }).finish())
     },
     loggedIn: (token: string) => {
       window.localStorage.setItem('token', token)

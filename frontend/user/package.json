@@ -32,7 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/generated  --proto_path ./../../shared --ts_proto_opt=oneof=unions --ts_proto_opt=esModuleInterop=true,outputServices=generic-definitions,outputServices=default events.proto"
+    "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/generated  --proto_path ./../../shared --ts_proto_opt=oneof=unions --ts_proto_opt=esModuleInterop=true events.proto"
   },
   "eslintConfig": {
     "extends": [

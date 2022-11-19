@@ -4,15 +4,28 @@ import './App.css';
 import { handleServerMessage } from './state/client';
 import { PriceChart } from './components/PriceChart';
 import { SnackbarProvider } from 'notistack';
-import { AuthState, client, useStore } from './state/state';
+import { AuthState, useStore } from './state/state';
 import { ServerMessage } from './generated/events';
 import { useSnackbar } from 'notistack';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Register } from './pages/Register';
+import { Home } from './pages/Home';
+import { Listings } from './pages/Listings';
+import { News } from './pages/News';
+import { ListingDetail } from './pages/ListingDetail';
 
+const HOST = 'ws://localhost:8080'
+
+export const client = new WebSocket(HOST);
+client.binaryType = "arraybuffer";
 
 function useInit() {
   const store = useStore();
+  
   const { enqueueSnackbar } = useSnackbar()
-  const setupEventListeners = () =>{
+  const setupEventListeners = () => {
+    
+    client.onopen = event => console.log('connected');
     client.onmessage = event => {
       if (event.data instanceof ArrayBuffer) {
         // binary frame
@@ -44,40 +57,46 @@ function useInit() {
   useEffect(() => { 
     setupEventListeners()
     authInit()
-    return () => client.close()
+    // return () => client.close()
   }, [])
 }
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: '/listings',
+    element: <Listings />,
+  },
+  {
+    path: '/listing/:id',
+    element: <ListingDetail />
+  },
+  {
+    path: '/news',
+    element: <News />
+  }
+]);
 function App() {
   const store = useStore();
   useInit()
   return (
     <div className="App">
-      <PriceChart priceHistory={[]} />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {store.authenticated == AuthState.authenticated && <RouterProvider router={router} />}
+      {store.authenticated == AuthState.notRegistered && <Register />}
+      {store.authenticated == AuthState.loading && <div>Loading...</div>}
+      {store.authenticated == AuthState.tokenAvailable && <div>Logging in again ...</div>}
     </div>
   );
 }
 
+
 function ContextWrappers() {
   return (
     <SnackbarProvider maxSnack={3} >
-      {/* <StoreContext.Provider value={store}> */}
       <App />
-      {/* </StoreContext.Provider> */}
     </SnackbarProvider>
   );
 }

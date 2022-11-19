@@ -4,7 +4,7 @@ interface NewsProps {
 
 }
 
-function News(props: NewsProps) {
+export function News(props: NewsProps) {
   return (
     <div>
       News

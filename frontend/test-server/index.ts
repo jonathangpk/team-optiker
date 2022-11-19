@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { ClientMessage, ServerMessage } from './generated/events';
+import { AuthToken, ClientMessage, ServerMessage } from './generated/events';
 
 
 const wss = new WebSocket.Server({ port: 8080, skipUTF8Validation: true });
@@ -32,12 +32,29 @@ wss.on('connection', (ws) => {
         // const metadata = clients.get(ws);
         if (message instanceof ArrayBuffer) {
             // binary frame
+            console.log('array buffer')
             const data = new Uint8Array( message );
             console.log('message', JSON.stringify(ClientMessage.decode(data)));
         } else if (message instanceof Buffer) {
+            
             const data = new Uint8Array(message)
+            console.log('array')
             const msg = ClientMessage.decode(data)
-            console.log('message', JSON.stringify(msg));
+            console.log(';asdfjaslkdfjaskld')
+            switch(msg.event?.$case) {
+                case 'login': 
+                case 'register': {
+                    ws.send(ServerMessage.encode({
+                        event: {
+                            $case: 'authToken',
+                            authToken: {
+                                token: 'asdfalksdjfaskl',
+                            }
+                        }
+                    }).finish())
+
+                }
+            }
 
         } else if (Array.isArray(message)) {
             console.log('array')

@@ -1,12 +1,11 @@
+import { useParams } from "react-router-dom";
+import { Container } from "../components/Container";
 
-interface ListingDetailProps {
-
-}
-
-function ListingDetail(props: ListingDetailProps) {
+export function ListingDetail() {
+  let { ticker } = useParams<{ticker: string}>();
   return (
-    <div>
-      ListingDetail
-    </div>
+    <Container title={ticker || ''}>
+      Details
+    </Container>
   )
 }
