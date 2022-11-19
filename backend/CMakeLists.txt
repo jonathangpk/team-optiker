@@ -43,10 +43,16 @@ set(MAIN_SOURCES
     src/main.cpp
     events.pb.cc)
 
+set(TOOLS_SOURCES
+    src/tools/StatusOr.h
+    )
+
 set(CORE_SOURCES
     core/OrderBook.hpp
     core/OrderEngine.hpp
     core/OrderEngine.cpp
+    core/OrderBookSide.hpp
+    core/MatchingEngine.hpp
     )
 
 set(TEST_SOURCES
