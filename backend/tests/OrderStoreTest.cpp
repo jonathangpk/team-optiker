@@ -12,12 +12,12 @@ TEST_CASE("Order Test Store") {
         Amount amount = 100;
         UserId user = 43;
 
-        store.CreateOrder(user, std::string(""),Buy, price, amount);
+        store.CreateOrder(user, TEST,Buy, price, amount);
         
         auto res = store.GetOrdersOfUser(user);
         CHECK(res.size() == 1);
 
-        store.CreateOrder(user, std::string(""),Buy, price, amount);
+        store.CreateOrder(user, TEST,Buy, price, amount);
         
         auto res2 = store.GetOrdersOfUser(user);
         CHECK(res2.size() == 2);

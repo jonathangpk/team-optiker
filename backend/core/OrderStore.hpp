@@ -16,7 +16,7 @@ public:
     }
 
     OrderHandle CreateOrder(
-            UserId user_id, std::string symbol, Side side, Price price, Amount  amount) {
+            UserId user_id, Symbol symbol, Side side, Price price, Amount  amount) {
 
         OrderId order_id = ++next_order_id_;
         auto now = std::chrono::system_clock::now();

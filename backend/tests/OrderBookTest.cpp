@@ -12,7 +12,7 @@ TEST_CASE("Full Match") {
         UserId user = 43;
         OrderId order_id = 67;
         auto order = std::make_shared<Order>(
-            std::string(""),Buy, price, amount, user, order_id, time_point(), false
+            TEST,Buy, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
@@ -28,7 +28,7 @@ TEST_CASE("Full Match") {
         UserId user = 44;
         OrderId order_id = 68;
         auto order = std::make_shared<Order>(
-            std::string(""),Sell, price, amount, user, order_id, time_point(), false
+            TEST,Sell, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
@@ -50,7 +50,7 @@ TEST_CASE("Full Match") {
         UserId user = 44;
         OrderId order_id = 68;
         auto order = std::make_shared<Order>(
-            std::string(""),Sell, price, amount, user, order_id, time_point(), false
+            TEST,Sell, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
@@ -72,7 +72,7 @@ TEST_CASE("Partial Match") {
         UserId user = 43;
         OrderId order_id = 67;
         auto order = std::make_shared<Order>(
-            std::string(""),Buy, price, amount, user, order_id, time_point(), false
+            TEST,Buy, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
@@ -88,7 +88,7 @@ TEST_CASE("Partial Match") {
         UserId user = 44;
         OrderId order_id = 68;
         auto order = std::make_shared<Order>(
-            std::string(""),Sell, price, amount, user, order_id, time_point(), false
+            TEST,Sell, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
@@ -110,7 +110,7 @@ TEST_CASE("Partial Match") {
         UserId user = 44;
         OrderId order_id = 68;
         auto order = std::make_shared<Order>(
-            std::string(""),Sell, price, amount, user, order_id, time_point(), false
+            TEST,Sell, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
@@ -138,7 +138,7 @@ TEST_CASE("Partial Match arriving order") {
         UserId user = 43;
         OrderId order_id = 67;
         auto order = std::make_shared<Order>(
-            std::string(""),Buy, price, amount, user, order_id, time_point(), false
+            TEST,Buy, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
@@ -154,7 +154,7 @@ TEST_CASE("Partial Match arriving order") {
         UserId user = 44;
         OrderId order_id = 68;
         auto order = std::make_shared<Order>(
-            std::string(""),Sell, price, amount, user, order_id, time_point(), false
+            TEST,Sell, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
@@ -176,7 +176,7 @@ TEST_CASE("Partial Match arriving order") {
         UserId user = 44;
         OrderId order_id = 68;
         auto order = std::make_shared<Order>(
-            std::string(""),Sell, price, amount, user, order_id, time_point(), false
+            TEST,Sell, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
@@ -192,7 +192,7 @@ TEST_CASE("Partial Match arriving order") {
         UserId user = 43;
         OrderId order_id = 69;
         auto order = std::make_shared<Order>(
-            std::string(""),Buy, price, amount, user, order_id, time_point(), false
+            TEST,Buy, price, amount, user, order_id, time_point(), false
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 2);

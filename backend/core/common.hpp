@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include "Symbols.hpp"
 
 using Price = int64_t;
 using Amount = uint64_t;
@@ -20,7 +21,8 @@ enum Side {
 };
 
 struct Order {
-    std::string symbol;
+    int64_t 
+    Symbol sym;
     Side side;
     Price price;
     Amount amount;
@@ -30,13 +32,14 @@ struct Order {
     bool cancled;
 
     Order(
-        std::string&& symbol1,  Side side1, Price price1, Amount amount1, UserId user_id1,
+        Symbol sym1,  Side side1, Price price1, Amount amount1, UserId user_id1,
         OrderId order_id1, time_point order_submission1, bool cancled1) :
-            symbol(symbol1), side(side1), price(price1), amount(amount1), 
+            sym(sym1), side(side1), price(price1), amount(amount1), 
             user_id(user_id1), order_id(order_id1), 
             order_submission(order_submission1), cancled(cancled1) {
 
     }
+
 
 };
 

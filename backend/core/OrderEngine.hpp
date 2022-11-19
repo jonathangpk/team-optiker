@@ -29,7 +29,9 @@ class OrderEngine {
         Side side, Price price, Amount amount);
 
 private:
-    std::map<std::string, Orderbook<>> symbold_to_order_book_;
+    std::map<Symbol, Orderbook<>> symbold_to_order_book_ = {
+        {TEST, Orderbook<>{}}
+    };
     OrderStore order_store_;
 
 };

@@ -8,18 +8,21 @@ OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateLimitOrder(
         UserId user, const std::string& symbol, Side side, Price price, Amount amount) {
 
 
-    auto order_book_it = symbold_to_order_book_.find(symbol);
-    if (order_book_it == symbold_to_order_book_.end()) {
+    auto symbols_it = STRING_TO_SYMBOL.find(symbol);
+    if (symbols_it == STRING_TO_SYMBOL.end()) {
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
     
-    auto order_handle = order_store_.CreateOrder(user, symbol, side, price, amount);
-    
+    auto sym = symbols_it->second;
+    auto it = symbold_to_order_book_.find(sym);
+    if(it == symbold_to_order_book_.end()) {
+         // Symbol not found 
+        return SYMBOL_NOT_FOUND;
+    }
+    auto order_handle = order_store_.CreateOrder(user, sym, side, price, amount);
 
-    auto match = order_book_it->second.AddLimitOrder(order_handle);
-
-    return match;
+    return it->second.AddLimitOrder(order_handle);
 }
 
 OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateExecuteOrCancelOrder(
@@ -27,15 +30,21 @@ OrderEngine::OrderEngineResultOrStatus OrderEngine::CreateExecuteOrCancelOrder(
             Amount amount) {
     
 
-    auto order_book_it = symbold_to_order_book_.find(symbol);
-    if (order_book_it == symbold_to_order_book_.end()) {
+    auto symbols_it = STRING_TO_SYMBOL.find(symbol);
+    if (symbols_it == STRING_TO_SYMBOL.end()) {
         // Symbol not found 
         return SYMBOL_NOT_FOUND;
     }
-    auto order_handle = order_store_.CreateOrder(user, symbol, side, price, amount);
+    
+    auto sym = symbols_it->second;
+    auto it = symbold_to_order_book_.find(sym);
+    if(it == symbold_to_order_book_.end()) {
+         // Symbol not found 
+        return SYMBOL_NOT_FOUND;
+    }
 
-    auto match = order_book_it->second.ExecuteOrCancle(order_handle);
+    auto order_handle = order_store_.CreateOrder(user, sym, side, price, amount);
 
-    return match;
+    return it->second.ExecuteOrCancle(order_handle);
 }
 
