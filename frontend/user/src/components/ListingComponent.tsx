@@ -54,7 +54,6 @@ interface ListingsProps {
 export function ListingsComponent(props: ListingsProps) {
   // const { listings } = props;
   const store = useStore();
-  console.log(store)
   const listings = dummy_data;
   const navigate = useNavigate();
 
@@ -67,13 +66,13 @@ export function ListingsComponent(props: ListingsProps) {
         overflow: "auto",
       }}>
         {
-          listings.map(lst =>
+          store.staticListings.map(lst =>
             <>
               <ListItemButton
-                key={lst.abbr}
+                key={lst.ticker}
                 alignItems="flex-start"
                 onClick={() => {
-                  navigate(`/listing/${lst.abbr}`);
+                  navigate(`/listing/${lst.ticker}`);
                 }}
               >
 
@@ -90,10 +89,20 @@ export function ListingsComponent(props: ListingsProps) {
                       {lst.name}
                     </Typography >
                   }
-                  secondary={lst.abbr + " — "}
+                  secondary={lst.ticker + " — " + lst.description}
                 />
+                <div style={{ float: "right", top: "50px" }}>
+                  <Typography
+                    sx={{ display: 'inline' }}
+                    variant="h6"
+                    color="text.primary"
+                    style={{ top: "20px", position: "relative" }}
+                  >
+                    {`${store.listingsWithPrice[lst.ticker]?.price} $`}
+                  </Typography >
+                </div>
               </ListItemButton>
-              <Divider component="li" />
+              <Divider component="li" />  
             </>
           )
         }
