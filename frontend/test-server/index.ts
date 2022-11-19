@@ -15,17 +15,70 @@ wss.on('connection', (ws) => {
             listings: {
                 listings: [
                     {
-                        ticker: '',
-                        name: '',
-                        description: '',
+                        ticker: 'AAPL',
+                        name: 'Apple',
+                        description: 'Tech company',
                         logo:'',
-                        amountShares: 1,
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'GOOG',
+                        name: 'Google',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
+                    },
+                    {
+                        ticker: 'MSFT',
+                        name: 'Microsoft',
+                        description: 'Tech company',
+                        logo:'',
+                        amountShares: 100000123,
                     }
                 ]
             }
         }
     }).finish()
     ws.send(msg)
+
+    const news = {
+        title: 'Elon Musk buys Wakanda',
+        description: 'Wow! Elon Musk buys Wakanda',
+        actions: [
+            {
+                name: 'Short Twitter',
+                description: 'Short Twitter',
+            },
+            {
+                name: 'Long Tesla',
+                description: 'Long Tesla',
+            },
+            {
+                name: 'Long Vibranium',
+                description: 'Long Vibranium',
+            }
+        ]
+    }
+
+    ws.send(ServerMessage.encode({
+        event: {
+            $case: 'newsList',
+            newsList: {
+                news: [
+                     news,
+                ]
+            }
+        }
+    }).finish())
+
+    setTimeout(() => {
+        ws.send(ServerMessage.encode({
+            event: {
+                $case: 'newNews',
+                newNews: news,
+            }
+        }).finish())
+    }, 2000)
 
     ws.on('message', (message, isBinary ) => {
         console.log(isBinary)
@@ -36,11 +89,8 @@ wss.on('connection', (ws) => {
             const data = new Uint8Array( message );
             console.log('message', JSON.stringify(ClientMessage.decode(data)));
         } else if (message instanceof Buffer) {
-            
             const data = new Uint8Array(message)
-            console.log('array')
             const msg = ClientMessage.decode(data)
-            console.log(';asdfjaslkdfjaskld')
             switch(msg.event?.$case) {
                 case 'login': 
                 case 'register': {
@@ -52,7 +102,6 @@ wss.on('connection', (ws) => {
                             }
                         }
                     }).finish())
-
                 }
             }
 
