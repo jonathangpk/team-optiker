@@ -13,6 +13,7 @@ import { Home } from './pages/Home';
 import { Listings } from './pages/Listings';
 import { News } from './pages/News';
 import { ListingDetail } from './pages/ListingDetail';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const HOST = 'ws://localhost:8080'
 
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
     element: <News />
   }
 ]);
+
 function App() {
   const store = useStore();
   useInit()
@@ -92,11 +94,18 @@ function App() {
   );
 }
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function ContextWrappers() {
   return (
     <SnackbarProvider maxSnack={3} >
-      <App />
+      <ThemeProvider theme={darkTheme}>
+        <App />
+      </ThemeProvider>
     </SnackbarProvider>
   );
 }

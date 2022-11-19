@@ -30,9 +30,9 @@ export function PriceChart(props: PriceChartProps) {
   }, [props.priceHistory])
   return (
     <div>
-      <h1>Price Chart</h1>
       <ReactApexChart
         options={{
+          colors: ["#03610c", "#FF0000"],
           chart: {
             type: 'area',
             stacked: false,
@@ -44,7 +44,7 @@ export function PriceChart(props: PriceChartProps) {
             },
             toolbar: {
               autoSelected: 'zoom'
-            }
+            },
           },
           dataLabels: {
             enabled: false
@@ -63,8 +63,9 @@ export function PriceChart(props: PriceChartProps) {
               inverseColors: false,
               opacityFrom: 0.5,
               opacityTo: 0,
-              stops: [0, 90, 100]
+              // stops: [0, 90, 100]
             },
+            colors: ["#03610c"],
           },
           yaxis: {
             labels: {
