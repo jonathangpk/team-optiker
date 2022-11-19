@@ -15,7 +15,7 @@ struct Position {
 };
 
 
-class PostionStore {
+class PositionStore {
 public:
     void AddCashAndPosition(UserId user, Money cash, Symbol sym, int64_t diff) {
         auto it = positions_.emplace(
@@ -27,7 +27,7 @@ public:
         position.positions[sym] += diff;
     }
 
-    const Position& GetPostion(UserId user) {
+    const Position& GetPosition(UserId user) {
         auto it = positions_.emplace(
             std::piecewise_construct,  
             std::make_tuple(user), std::make_tuple());

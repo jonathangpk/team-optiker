@@ -18,6 +18,14 @@ public:
 
     }
 
+    OrderEngineResult ExecuteOrder(OrderHandle handle) {
+        if(handle->type == LIMIT) {
+            return AddLimitOrder(handle);
+        } else {//if(handle->type == EXECUTE_OR_CANCLE) {
+            return ExecuteOrCancle(handle);
+        }
+    }
+
     OrderEngineResult ExecuteOrCancle(OrderHandle order) {
         OrderEngineResult result;
         if (order->side == Sell) {

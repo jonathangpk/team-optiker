@@ -16,13 +16,14 @@ public:
     }
 
     OrderHandle CreateOrder(
-            UserId user_id, Symbol symbol, Side side, Price price, Amount  amount) {
+            UserId user_id, OrderType type, Symbol symbol, Side side, 
+            Price price, Amount  amount) {
 
         OrderId order_id = ++next_order_id_;
         auto now = std::chrono::system_clock::now();
 
         auto order_handle = std::make_shared<Order>(
-            std::move(symbol), side, price, amount, user_id, order_id, now, false);
+            symbol, type, side, price, amount, user_id, order_id, now, false);
 
         auto user_it = user_id_to_order_.emplace(
             std::piecewise_construct, std::make_tuple(user_id), std::make_tuple());

@@ -1,8 +1,6 @@
-import React, { createContext, useEffect } from 'react';
-import logo from './logo.svg';
+import { useEffect } from 'react';
 import './App.css';
 import { handleServerMessage } from './state/client';
-import { PriceChart } from './components/PriceChart';
 import { SnackbarProvider } from 'notistack';
 import { useStore } from './state/store';
 import { ServerMessage } from './generated/events';
@@ -14,6 +12,7 @@ import { Listings } from './pages/Listings';
 import { News } from './pages/News';
 import { ListingDetail } from './pages/ListingDetail';
 import { AuthState } from './state/authStore';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const HOST = 'ws://localhost:8080'
 
@@ -80,6 +79,7 @@ const router = createBrowserRouter([
     element: <News />
   }
 ]);
+
 function App() {
   const store = useStore();
   useInit()
@@ -93,11 +93,18 @@ function App() {
   );
 }
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function ContextWrappers() {
   return (
     <SnackbarProvider maxSnack={3} >
-      <App />
+      <ThemeProvider theme={darkTheme}>
+        <App />
+      </ThemeProvider>
     </SnackbarProvider>
   );
 }
