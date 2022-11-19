@@ -39,16 +39,40 @@ add_custom_command(
     DEPENDS ../shared/events.proto
 )
 
-
-set(CORE_SOURCES
+set(MAIN_SOURCES
     src/main.cpp
-    events.pb.cc
+    events.pb.cc)
+
+set(TOOLS_SOURCES
+    src/tools/StatusOr.h
     )
 
+set(CORE_SOURCES
+    core/OrderBook.hpp
+    core/OrderEngine.hpp
+    core/OrderEngine.cpp
+    core/OrderBookSide.hpp
+    core/MatchingEngine.hpp
+    )
+
+set(TEST_SOURCES
+    tests/tests_main.cpp
+    tests/OrderBookTest.cpp
+)
+
 add_executable(optiker-backend
+    ${MAIN_SOURCES}
+    ${CORE_SOURCES}
+    )
+
+add_executable(test-optiker-backend
+    ${TEST_SOURCES}
     ${CORE_SOURCES}
     )
 
 target_link_libraries(optiker-backend ${Protobuf_LIBRARIES})
 target_link_libraries(optiker-backend librt.so)
+
+target_link_libraries(test-optiker-backend ${Protobuf_LIBRARIES})
+target_link_libraries(test-optiker-backend librt.so)
 
