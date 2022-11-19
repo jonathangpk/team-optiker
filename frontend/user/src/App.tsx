@@ -1,8 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { createClient } from './state/client';
 
 function App() {
+
+  const [client, setClient] = React.useState(createClient());
   return (
     <div className="App">
       <header className="App-header">
