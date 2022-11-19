@@ -95,19 +95,12 @@ public:
         if(ec)
             return fail(ec, "accept");
 
-//        event::ServerMessage sm;
-//        event::NewEvent *event = new event::NewEvent;
-//        event->set_title("Test");
-//        event->set_description("Testing");
-//        event->add_actions();
-//        sm.set_allocated_new_event(event);
-//
-//        out_ = sm.SerializeAsString();
-//
-//        send_message();
-
         // Read a message
         do_read();
+    }
+
+    void set_message(std::string &&str) {
+        out_ = str;
     }
 
     void send_message() {
