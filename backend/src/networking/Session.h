@@ -13,6 +13,7 @@
 #include <string>
 
 #include "common.h"
+#include "events.pb.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -106,16 +107,15 @@ public:
         if(ec)
             return fail(ec, "read");
 
-        // Echo the message
-        ws_.text(ws_.got_text());
         ws_.async_write(
                 buffer_.data(),
                 beast::bind_front_handler(
                         &session::on_write,
                         shared_from_this()));
-        const char* str = static_cast<const char*>(buffer_.cdata().data());
-        std::string out(str, str + bytes_transferred);
-        std::cout << out << std::endl;
+
+        event::ClientMessage msg;
+        msg.ParseFromArray(buffer_.cdata().data(), bytes_transferred);
+
     }
 
     void
