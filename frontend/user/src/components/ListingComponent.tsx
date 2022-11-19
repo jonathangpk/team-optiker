@@ -62,7 +62,7 @@ export function ListingsComponent(props: ListingsProps) {
       <List sx={{
         width: '100%',
         bgcolor: 'background.paper',
-        maxHeight: 300,
+        maxHeight: "80vh",
         overflow: "auto",
       }}>
         {
