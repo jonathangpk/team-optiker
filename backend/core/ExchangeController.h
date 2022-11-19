@@ -10,6 +10,10 @@ class ExchangeController;
 #include "Symbols.hpp"
 #include "Users.h"
 
+#include <chrono>
+#include <thread>
+
+
 #include <map>
 
 class ExchangeController {
@@ -17,13 +21,48 @@ class ExchangeController {
     OrderEngine order_engine_;
     PositionStore position_store_;
     static constexpr Money START_CAPITAL = 10000;
-
     std::map<UserId,std::shared_ptr<session>> user_sessions_;
 
+    std::thread run_loop_thread_;
+
+    static constexpr auto ms_run_loop_refresh = std::chrono::milliseconds(1000);
+
+    void RunLoop() {
+        
+        // This thread is bradcasting to clients.
+        while(true) {
+            event::ServerMessage sm;
+            auto *created = new event::ListingPrices; 
+            for(auto [key, _] : STRING_TO_SYMBOL ) {
+                
+                auto res = order_engine_.GetBuyAndSellPrice(key);
+                if(key.size() == 0) {
+                    auto el = created->add_listings();
+                    el->set_bid_price(res.first);
+                    el->set_ask_price(res.second);
+                    el->set_volume(0);
+                }
+                break;
+            }
+            sm.set_allocated_listing_updates(created);
+            auto serialized = sm.SerializeAsString();
+            
+            for(auto [_, session] : user_sessions_ ) {
+                std::cout<< "cout" << std::endl;
+                session->set_message_fomr_copy(serialized);
+                session->send_message();
+            }
+
+
+            std::this_thread::sleep_for(ms_run_loop_refresh);
+        }
+    }
+
     std::string EncodeOrders(const std::vector<OrderHandle>& orders) {
-        event::Orders sm;
+        event::ServerMessage sm;
+        auto *created = new event::Orders; 
         for(const auto& order : orders) {
-            event::InfoOrder* info = sm.add_orders();
+            event::InfoOrder* info = created->add_orders();
             info->set_id(order->order_id);
             info->set_type(order->side == Sell? event::ASK : event::BID);
             auto it = SYMBOL_TO_STRING.find(order->sym);
@@ -35,6 +74,7 @@ class ExchangeController {
             info->set_price(order->price);
             info->set_amount(order->amount.load());
         }
+        sm.set_allocated_orders(created);
         return sm.SerializeAsString();
     }
 
@@ -153,8 +193,11 @@ class ExchangeController {
 public:
     ExchangeController() : order_store_(),
     order_engine_(std::bind_front(&ExchangeController::ResultCallback, this), &order_store_),
-    position_store_(PositionStore())
+    position_store_(PositionStore()), 
+    run_loop_thread_(std::bind_front(&ExchangeController::RunLoop, this))
     {
+
+        std::cout << "create it" << std::endl;
     }
 
 

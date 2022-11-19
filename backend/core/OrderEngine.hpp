@@ -94,7 +94,7 @@ public:
         UserId user, const std::string& symbol, 
         Side side, Price price, Amount amount);
 
-    StatusOr<std::pair<Price,Price>,OrderEngineStatus>
+    std::pair<Price,Price>
     GetBuyAndSellPrice(const std::string& symbol);
 
 private:
