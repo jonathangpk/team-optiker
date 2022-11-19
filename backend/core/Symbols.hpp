@@ -12,7 +12,8 @@ enum Symbol : uint64_t {
 
 
 inline static std::map<std::string,Symbol>  STRING_TO_SYMBOL = {
-    {"test", TEST}
+    {"test", TEST},
+    {"TSX", TEST},
 };
 
 #endif
