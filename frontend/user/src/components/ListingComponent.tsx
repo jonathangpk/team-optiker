@@ -10,6 +10,7 @@ import InfoIcon from '@mui/icons-material/Info';
 
 import { useNavigate  } from "react-router-dom";
 import ListItemButton from '@mui/material/ListItemButton';
+import { useStore } from '../state/store';
 
 
 const dummy_data : IListing[] = [
@@ -43,20 +44,23 @@ interface ListingsProps {
 
 export function ListingsComponent(props: ListingsProps) {
 	// const { listings } = props;
-
+  const store = useStore();
+  console.log(store)
   const listings = dummy_data;
   const navigate = useNavigate();
+
+
 
 	return (
 		<List sx={{ width: '100%', bgcolor: 'background.paper' }}>
 			{
-				listings.map(lst =>
+				store.staticListings.map(lst =>
           <React.Fragment>
 					<ListItemButton
-						key={lst.abbr}
+						key={lst.ticker}
 						alignItems="flex-start"
             onClick={() => {
-              navigate(`/listing/${lst.abbr}`);
+              navigate(`/listing/${lst.ticker}`);
             }}
 					>
 
@@ -80,7 +84,8 @@ export function ListingsComponent(props: ListingsProps) {
                       variant="subtitle1"
                       color="text.secondary"
                     >
-                      { " — " + lst.abbr}
+                      { " — " + lst.ticker}
+                      {store.listingsWithPrice[lst.ticker]?.price}
                     </Typography>
                 }
               />

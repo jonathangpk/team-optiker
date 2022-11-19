@@ -79,6 +79,36 @@ wss.on('connection', (ws) => {
             }
         }).finish())
     }, 2000)
+    setInterval(() => {
+        const val = Math.floor(Math.random() * 1000)
+        ws.send(ServerMessage.encode({
+            event: {
+                $case: 'listingUpdates',
+                listingUpdates: {
+                    listings: {
+                        'AAPL': {
+                            askPrice: val-1,
+                            price: val,
+                            bidPrice: val + 1,
+                            volume: 123
+                        },
+                        'GOOG': {
+                            askPrice: val-1+100,
+                            price: val+100,
+                            bidPrice: val + 1+100,
+                            volume: 123
+                        },
+                        'MSFT': {
+                            askPrice: val-1+300,
+                            price: val+300,
+                            bidPrice: val + 1+300,
+                            volume: 143
+                        }
+                    }
+                }
+            }
+        }).finish())
+    }, 1000)
 
     ws.on('message', (message, isBinary ) => {
         console.log(isBinary)

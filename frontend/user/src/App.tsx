@@ -9,7 +9,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { Listings } from './pages/Listings';
-import { News } from './pages/News';
+import { News, NewsPopup } from './pages/News';
 import { ListingDetail } from './pages/ListingDetail';
 import { AuthState } from './state/authStore';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -78,6 +78,7 @@ function App() {
       {store.authenticated == AuthState.notRegistered && <Register />}
       {store.authenticated == AuthState.loading && <div>Loading...</div>}
       {store.authenticated == AuthState.tokenAvailable && <div>Logging in again ...</div>}
+      <NewsPopup />
     </div>
   );
 }

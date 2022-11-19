@@ -1,6 +1,7 @@
 import create, { StateCreator } from 'zustand'
+
 import { MI } from '../util';
-import { InfoPosition, ListingOrderBook, ListingPrice, ListingPrices, StaticListing } from "./../generated/events";
+import { InfoPosition, News } from "./../generated/events";
 import { AuthSlice, authSlice } from './authStore';
 import { Client } from './client';
 import { ListingSlice, listingSlice } from './listingStore';
@@ -20,8 +21,27 @@ const positionSlice: StateCreator<Store, [], [], PositionSlice> =(set, get) => (
 })
 
 
+export type INews = MI<typeof News>
+export type INewsAction =  INews['actions'][number]
+export interface NewsSlice {
+  news: INews[];
+  newsPopup: INews | undefined;
+  setNews: (news: INews[]) => void;
+  onNewNews: (news: INews) => void;
+  hideNews: () => void;
+  showNews: (news: INews) => void;
+}
+ 
+export const newsSlice: StateCreator<Store, [], [], NewsSlice> = (set, get) => ({
+  news: [],
+  newsPopup: undefined,
+  setNews: (news) => set({ news }),
+  onNewNews: (news) => set({ newsPopup: news }),
+  hideNews: () => set({ newsPopup: undefined }),
+  showNews: news => set({ newsPopup: news }),
+})
 
-export type Store = AuthSlice & PositionSlice & ListingSlice & OrderSlice & {
+export type Store = AuthSlice & PositionSlice & ListingSlice & OrderSlice & NewsSlice & {
   client: Client;
 }
 
@@ -33,5 +53,6 @@ export const useStore = create<Store>()((...a) => {
     ...positionSlice(...a),
     ...listingSlice(...a),
     ...orderSlice(...a),
+    ...newsSlice(...a),
   }
 })

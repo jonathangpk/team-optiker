@@ -99,9 +99,10 @@ export function handleServerMessage(store: Store, message: ServerMessage) {
       return store.setPositions(event.positions.positions)
     // News
     case 'newNews':
-      return
+      return store.onNewNews(event.newNews)
     case 'newsList':
-      return
+      return store.setNews(event.newsList.news)
+    // Error
     case 'error':
       if (event.error.error === 'Error: Invalid Token.') {
         window.localStorage.removeItem('token')
