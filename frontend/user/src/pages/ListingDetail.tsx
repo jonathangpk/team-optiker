@@ -8,6 +8,12 @@ import { useStore } from "../state/store";
 export function ListingDetail() {
   let { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const store = useStore();
+
+  if (!id || !store.staticListings.some(lst => lst.ticker === id)) {
+		// invalid stock
+		navigate("/listings");
+	}
 
   return (
     <Container title={id || ''} navigationPosition="listings" backLocation='listings'>

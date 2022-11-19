@@ -1,6 +1,6 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "../components/Container";
 import { OrderType } from "../generated/events";
 import { useStore } from "../state/store";
@@ -19,6 +19,13 @@ export function ExchangeView(props: IProps) {
 	const [shares, setShares] = useState<number>(1);
 	const [bid, setBid] = useState<number>(currentPrice);
 	const store = useStore();
+
+	const navigate = useNavigate();
+	
+  if (!id || !store.staticListings.some(lst => lst.ticker === id)) {
+		// invalid stock
+		navigate("/listings");
+	}
 
 	const { type } = props;
 
