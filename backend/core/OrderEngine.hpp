@@ -21,7 +21,7 @@ enum OrderEngineStatus {
 
 class OrderEngine {
 
-    OrderEngine();
+    OrderEngine(std::function<void(const OrderEngineResult&)> call_back);
 
     using OrderEngineResultOrStatus
         = StatusOr<OrderEngineResult, OrderEngineStatus>;
@@ -38,7 +38,8 @@ private:
     
 
     struct SymbolContext {
-        SymbolContext () : thread(&SymbolContext::Work, this) {
+        SymbolContext (std::function<void(const OrderEngineResult&)> call_back) 
+            : call_back_(call_back) ,thread_(&SymbolContext::Work, this) {
 
         }
 
@@ -48,18 +49,14 @@ private:
                 {
                     std::unique_lock<std:: mutex> lk;
                     while(order_queue_.empty()) {
-                        cv.wait(lk);
+                        cv_.wait(lk);
                     }
 
                     handle = order_queue_.front();
                     // THis was a copy so pop here.
                     order_queue_.pop_front();
                 }
-                if(handle->type == LIMIT) {
-                    orderbook_.AddLimitOrder(handle);
-                } else if(handle->type == EXECUTE_OR_CANCLE) {
-                    orderbook_.ExecuteOrCancle(handle);
-                }
+                OrderEngineResult result = orderbook_.ExecuteOrder(handle);
             }
 
         }
@@ -69,17 +66,19 @@ private:
                 std::lock_guard<std::mutex> lg(mutex_);
                 order_queue_.emplace_back(handle);
             }
-            cv.notify_one();
+            cv_.notify_one();
         }
-    private:
-        std::thread thread;
-        std::condition_variable cv;
+    protected:
+        std::function<void(const OrderEngineResult&)> call_back_;
+        std::condition_variable cv_;
         std::mutex mutex_;
         std::deque<OrderHandle> order_queue_;
         Orderbook<> orderbook_;
+        std::thread thread_;
+        
     };
 
-    std::array<SymbolContext, NUM_SYMBOLS> symbol_to_context;
+    std::vector<SymbolContext*> symbol_to_context_;
 
 
     OrderStore order_store_;
