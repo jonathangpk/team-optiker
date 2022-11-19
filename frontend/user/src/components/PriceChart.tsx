@@ -1,11 +1,13 @@
 import { useMemo } from "react"
 import ReactApexChart from 'react-apexcharts'
+import { useStore } from "../state/state"
 
 interface PriceChartProps {
   priceHistory: {[key: number]: number}
 }
 export function PriceChart(props: PriceChartProps) {
-
+  const store = useStore()
+  console.log(store.authenticated)
   const data = useMemo(() => {
     return [
       {

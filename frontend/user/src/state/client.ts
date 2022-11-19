@@ -1,18 +1,7 @@
-import { ClientMessage, OrderType, ServerMessage } from "../generated/events";
-
-
+import { State } from "./state";
+import { ClientMessage, Login, OrderType, Register, ServerMessage } from "../generated/events";
 
 const HOST = 'ws://localhost:8080'
-
-
-function onOpen() {
-  console.log('connected');
-  // send auth message
-}
-
-function onMessage() {
-
-}
 
 // creates websocket connection
 export function createClient() {
@@ -21,40 +10,29 @@ export function createClient() {
   ws.onopen = event => {
     console.log('connected');
   };
-  ws.onmessage = event => {
-    if (event.data instanceof ArrayBuffer) {
-      // binary frame
-      const data = new Uint8Array( event.data );
-      const message = ServerMessage.decode(data)
-      console.log(message)
-      console.log(message.event?.$case)
-      const msg = ClientMessage.encode({
-        event: {
-          $case: 'placeOrder',
-          placeOrder: {
-            amount: 100,
-            price: 100,
-            ticker: 'AAPL',
-            type: OrderType.ASK
-          }
-        }
-      }).finish()
-      setTimeout(() => {
-        ws.send(msg.buffer)
-        console.log('sent')
-      }, 1000)
-      
-    } else {
-      // text frame
-      console.log('wrong ws format')
-      console.log(event.data);
-    }
-  };
-  ws.onerror = (event) => {
-    console.log('onerror', event)
-  };
-  ws.onclose = (event) => {
-    console.log('onclose', event) 
-  };
   return ws
+}
+
+function exhausted(arg: never): never {
+  throw new Error('exhausted')
+  console.log('should not happen, switch should be exhausted')
+}
+
+export function handleServerMessage(store: State, message: ServerMessage) {
+  if (!message.event) {
+    console.log("Error, no event defined on message")
+    return
+  }
+  const event = message.event
+  switch(event.$case) {
+    case 'authToken':
+      store.loggedIn(event.authToken.token)
+      return
+    // case '':
+
+    // default:
+    //   exhausted(event.$case)
+      
+  }
+
 }
