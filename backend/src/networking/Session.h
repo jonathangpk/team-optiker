@@ -15,6 +15,13 @@
 #include "common.h"
 #include "events.pb.h"
 #include "Users.h"
+#include "ExchangeController.h"
+
+#include <boost/beast.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -27,6 +34,7 @@ class session : public std::enable_shared_from_this<session>
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer in_;
     std::string out_;
+    ExchangeController* exchnage_controller_;
     Users* users_;
     std::optional<const User*> cur_user_ = {};
 
@@ -34,8 +42,8 @@ class session : public std::enable_shared_from_this<session>
 public:
     // Take ownership of the socket
     explicit
-    session(tcp::socket&& socket, Users* users)
-            : ws_(std::move(socket))
+    session(tcp::socket&& socket, ExchangeController* exchnage_controller, Users* users)
+            : ws_(std::move(socket)), exchnage_controller_(exchnage_controller)
             , users_(users)
     {
     }
