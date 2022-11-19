@@ -84,7 +84,6 @@ message ListingOrderBook {
 
 
 message ListingPrice {
-  string ticker = 1;
   int64 price = 2;
   uint64 volume = 3;
   int64 bid_price = 4;
@@ -93,7 +92,7 @@ message ListingPrice {
 // Server
 // Server sends by default to all clients the price updates of all listings
 message ListingPrices {
-  repeated ListingPrice listings = 1;
+  map<string, ListingPrice> listings = 1;
 }
 
 /**
@@ -142,6 +141,7 @@ message OrderCreated {
 // Send to client when order is partially fullfilled
 message OrderPartiallyFullfilled {
   string id = 1;
+  // describse how much is already fullfilled
   uint64 amount = 2;
 }
 
@@ -179,7 +179,6 @@ message Orders {
 */
 
 // Client
-message GetPositions {}
 
 message InfoPosition {
   string ticker = 1;

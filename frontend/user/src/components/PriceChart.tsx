@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import ReactApexChart from 'react-apexcharts'
-import { useStore } from "../state/state"
+import { useStore } from "../state/store"
 
 interface PriceChartProps {
   priceHistory: {[key: number]: number}
