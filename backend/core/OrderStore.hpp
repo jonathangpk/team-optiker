@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <chrono>
+#include <shared_mutex>
 
 class OrderStore {
 public:
@@ -18,6 +19,7 @@ public:
     OrderHandle CreateOrder(
             UserId user_id, OrderType type, Symbol symbol, Side side, 
             Price price, Amount  amount) {
+        std::unique_lock<std::shared_mutex> w_lock(mutex_);
 
         OrderId order_id = ++next_order_id_;
         auto now = std::chrono::system_clock::now();
@@ -33,6 +35,7 @@ public:
     }
 
     const std::vector<OrderHandle>& GetOrdersOfUser(UserId user) {
+        std::shared_lock<std::shared_mutex> r_lock(mutex_);
         auto it = user_id_to_order_.find(user);
         if (it == user_id_to_order_.end()) {
             return no_orders;
@@ -52,6 +55,7 @@ private:
     const std::vector<OrderHandle> no_orders;
 
     OrderId next_order_id_; 
+    std::shared_mutex mutex_;
     
 };
 

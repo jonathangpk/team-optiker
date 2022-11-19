@@ -1,5 +1,5 @@
 import { AppBar, BottomNavigation, BottomNavigationAction, Box, IconButton, Toolbar, Typography } from "@mui/material";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -9,46 +9,40 @@ interface ContainerProps {
   children: React.ReactNode;
   title: string;
   navigationPosition: string,
-  backLocation?: string;
 }
 
-const bottomNavStyles = {
-  width: '100%',
-  position: 'fixed',
-  bottom: 0,
-};
-
-export function Container({ children, title, navigationPosition, backLocation }: ContainerProps) {
+export function Container({ children, title, navigationPosition }: ContainerProps) {
   const navigate = useNavigate();
   return (
     <Box>
       <AppBar component="nav">
         <Toolbar>
           {
-            (backLocation !== undefined) ? (
+            (navigationPosition !== "home") ? (
               <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ mr: 2 }}
-                onClick={() => navigate(`/${backLocation}`)}
+                onClick={() => navigate(-1)}
               >
                 <ArrowBackIcon fontSize="large"/>
               </IconButton>
             ) : null
           }
-          <Typography variant="h4">{title}</Typography>
+          <Typography variant={navigationPosition === "home" ? "h3" : "h4"}>{title}</Typography>
         </Toolbar>
       </AppBar>
       <Box
         style={{
           marginTop: 80,
           width: '100%',
-          position: 'fixed',
-          alignContent: "center",
+          position: "fixed",
+          // display: "flex",
+          justifyContent: "center"
         }}>
-        {children}
+          {children}
       </Box>
       <BottomNavigation
           style={{

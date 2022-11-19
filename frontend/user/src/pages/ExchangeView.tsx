@@ -1,6 +1,6 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "../components/Container";
 import { OrderType } from "../generated/events";
 import { useStore } from "../state/store";
@@ -20,10 +20,17 @@ export function ExchangeView(props: IProps) {
 	const [bid, setBid] = useState<number>(currentPrice);
 	const store = useStore();
 
+	const navigate = useNavigate();
+	
+  if (!id || !store.staticListings.some(lst => lst.ticker === id)) {
+		// invalid stock
+		navigate("/listings");
+	}
+
 	const { type } = props;
 
 	return (
-		<Container title={`${type === "buy" ? "BUY" : "SELL"} ${id}`} navigationPosition="listings" backLocation={`listing/${id}`} >
+		<Container title={`${type === "buy" ? "BUY" : "SELL"} ${id}`} navigationPosition="listings" >
 			<Typography
 				sx={{ display: 'inline', alignItems: "left" }}
 				component="span"
