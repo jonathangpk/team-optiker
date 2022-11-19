@@ -67,13 +67,13 @@ export function ListingsComponent(props: ListingsProps) {
         overflow: "auto",
       }}>
         {
-          store.staticListings.map(lst =>
+          listings.map(lst =>
             <>
               <ListItemButton
-                key={lst.ticker}
+                key={lst.abbr}
                 alignItems="flex-start"
                 onClick={() => {
-                  navigate(`/listing/${lst.ticker}`);
+                  navigate(`/listing/${lst.abbr}`);
                 }}
               >
 
@@ -90,18 +90,8 @@ export function ListingsComponent(props: ListingsProps) {
                       {lst.name}
                     </Typography >
                   }
-                  secondary={lst.ticker + " — " + lst.description}
+                  secondary={lst.abbr + " — "}
                 />
-                <div style={{ float: "right", top: "50px" }}>
-                  <Typography
-                    sx={{ display: 'inline' }}
-                    variant="h6"
-                    color="text.primary"
-                    style={{ top: "20px", position: "relative" }}
-                  >
-                    {`${store.listingsWithPrice[lst.ticker]?.price} $`}
-                  </Typography >
-                </div>
               </ListItemButton>
               <Divider component="li" />
             </>
