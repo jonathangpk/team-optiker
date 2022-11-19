@@ -8,7 +8,6 @@ export function Register() {
   const [name, setName] = useState('');
 
   useEffect(() => {
-    
     document.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         store.register(name);
