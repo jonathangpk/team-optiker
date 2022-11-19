@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+
+/**
+  Events
+*/
+message EventAction {
+  string name = 1;
+  string description = 2;
+}
+
+message NewEvent {
+  string title = 1;
+  string description = 2;
+  repeated EventAction actions = 3;
+}
+
+
+/**
+  Listings
+*/
+
+// Client
+message SubscribeListing {
+  string ticker = 1;
+}
+
+// Client
+message UnsubscribeListing {
+  string ticker = 1;
+}
+
+// Server
+message Listing {
+  string ticker = 1;
+  string name = 2;
+  string description = 3;
+  string logo = 4;
+  uint64 amount_shares = 5;
+  int64 price = 6;
+  int64 ask_price = 7;
+  int64 bid_price = 8;
+  map<int64, uint64> order_book = 10;
+  map<uint32, int64> price_history = 11; 
+}
+
+// Client
+message SubscribeListingUpdates {}
+
+// Client
+message UnsubscribeListingUpdates {}
+
+message DynamicListing {
+  string ticker = 1;
+  int64 price = 2;
+  uint64 volume = 3;
+  int64 bid_price = 4;
+  int64 ask_price = 5;
+}
+// Server
+message ListingUpdates {
+  repeated DynamicListing listings = 1;
+}
+
+/**
+  Orders
+*/
+
+
+enum OrderType {
+  ASK = 0;
+  BID = 1;
+}
+
+// Client
+message PlaceOrder {
+  OrderType type = 1;
+  string ticker = 2;
+  int64 price = 3;
+  uint64 amount = 4;
+}
+// Client
+message CancelOrder {
+  string id = 1;
+}
+
+// Server
+message OrderFullfilled {}
+
+/**
+  State requests
+*/
+
+// Client
+message GetListings {}
+
+message StaticListing {
+  string ticker = 1;
+  string name = 2;
+  string description = 3;
+  string logo = 4;
+  uint64 amount_shares = 5;
+}
+// Server
+message Listings {
+  repeated StaticListing listings = 1;
+}
+
+// Client
+message GetPositions {}
+
+message InfoPosition {
+  string ticker = 1;
+  string amount = 2;
+  int64 price = 3;
+}
+// Server
+message Positions {
+  repeated InfoPosition positions = 1;
+}
+
+// Client
+message GetOrders {}
+
+message InfoOrder {
+  string id = 1;
+  OrderType type = 2;
+  string ticker = 3;
+  int64 price = 4;
+  uint64 amount = 5;
+}
+
+// Server
+message Orders {
+  repeated InfoOrder orders = 1;
+}
+
+message ClientMessage {
+  oneof event {
+    SubscribeListing subscribe_listing = 1;
+    UnsubscribeListing unsubscribe_listing = 2;
+    SubscribeListingUpdates subscribe_listing_updates = 3;
+    UnsubscribeListingUpdates unsubscribe_listing_updates = 4;
+    PlaceOrder place_order = 5;
+    CancelOrder cancel_order = 6;
+    GetListings get_listings = 7;
+    GetPositions get_positions = 8;
+    GetOrders get_orders = 9;
+  }
+}
+
+message ServerMessage {
+  oneof event {
+    NewEvent new_event = 1;
+    Listings listings = 2;
+    ListingUpdates listing_updates = 3;
+    OrderFullfilled order_fullfilled = 4;
+    Positions positions = 5;
+    Orders orders = 6;
+  }
+}
+
