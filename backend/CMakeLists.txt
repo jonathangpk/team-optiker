@@ -28,6 +28,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer")
 
 include_directories(third_party)
 include_directories(src)
+include_directories(core)
 include_directories(src/networking)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

@@ -2,7 +2,8 @@
 #define OPTIKER_BACKEND_EXCHANGECONTROLLER_H
 
 #include <functional>
-
+class ExchangeController;
+#include "Session.h"
 #include "ExchangeController.h"
 #include "PositionStore.hpp"
 #include "OrderEngine.hpp"
@@ -23,6 +24,12 @@ public:
     position_store_(PositionStore())
     {
     }
+
+
+    void OnNewSession(std::shared_ptr<session>) {
+        std::cout << "New session Callback" << std::endl;
+    }
+
 
 
 
