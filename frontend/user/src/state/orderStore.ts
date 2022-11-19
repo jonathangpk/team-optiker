@@ -10,16 +10,16 @@ type IOrderCreated = MI<typeof OrderCreated>
 type IOrderPartiallyFullfilled = MI<typeof OrderPartiallyFullfilled>
 type IOrderFullfilled = MI<typeof OrderFullfilled>
 export interface OrderSlice {
-  orders: Record<string, IInfoOrder>;
+  orders: Record<number, IInfoOrder>;
   setOrders: (orders: IInfoOrder[]) => void;
   // User Actions
   placeOrder: (order: IPlaceOrder) => void;
-  cancelOrder: (orderId: string) => void;
+  cancelOrder: (orderId: number) => void;
   // Update Patches
   orderCreated: (order: IOrderCreated) => void;
   orderPartiallyFullfilled: (order: IOrderPartiallyFullfilled) => void;
   orderFullfilled: (order: IOrderFullfilled) => void;
-  orderCanceld: (orderId: string) => void;
+  orderCanceld: (orderId: number) => void;
 }
 
 
@@ -50,7 +50,7 @@ export const orderSlice: StateCreator<Store, [], [], OrderSlice> = (set, get) =>
       [order.id]: order,
     }
   }),
-  orderCanceld: (orderId: string) => {
+  orderCanceld: orderId => {
     const orders = get().orders
     delete orders[orderId]
     return set({
@@ -67,7 +67,7 @@ export const orderSlice: StateCreator<Store, [], [], OrderSlice> = (set, get) =>
         ...orders,
         [order.id]: {
           ...order,
-          amount: Math.min(order.amount, partialFullfilled.amount),
+          amount: Math.min(order.amount, partialFullfilled.amountLeft),
         },
       }
     })

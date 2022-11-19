@@ -124,7 +124,7 @@ message PlaceOrder {
 // Client
 // Client cancels order
 message CancelOrder {
-  string id = 1;
+  uint64 id = 1;
 }
 
 
