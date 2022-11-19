@@ -3,6 +3,25 @@ syntax = "proto3";
 package event;
 
 /**
+  Authentication
+*/
+
+// Client
+message Register {
+  string name = 1;
+}
+
+// Client
+message Login {
+  string token = 1;
+}
+
+// Server
+message AuthToken {
+  string token = 1;
+}
+
+/**
   Events
 */
 message EventAction {
@@ -147,6 +166,8 @@ message ClientMessage {
     GetListings get_listings = 7;
     GetPositions get_positions = 8;
     GetOrders get_orders = 9;
+    Register register = 10;
+    Login login = 11;
   }
 }
 
@@ -158,5 +179,6 @@ message ServerMessage {
     OrderFullfilled order_fullfilled = 4;
     Positions positions = 5;
     Orders orders = 6;
+    AuthToken auth_token = 7;
   }
 }
