@@ -9,8 +9,9 @@ export function ListingDetail() {
   let { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const store = useStore();
+  const listing = store.staticListings.find(lst => lst.ticker === id);
 
-  if (!id || !store.staticListings.some(lst => lst.ticker === id)) {
+  if (!id || !listing) {
 		// invalid stock
 		navigate("/listings");
 	}
@@ -18,6 +19,16 @@ export function ListingDetail() {
   return (
     <Container title={id || ''} navigationPosition="listings">
     <PriceGraph />
+    <Typography
+        sx={{ display: 'inline', alignItems: "left" }}
+        component="span"
+        variant="h6"
+        color="text.secondary"
+      >
+        {`${listing?.name} - ${listing?.description}`}
+      </Typography>
+      <br></br>
+      <br></br>
       <Typography
         sx={{ display: 'inline', alignItems: "left" }}
         component="span"
