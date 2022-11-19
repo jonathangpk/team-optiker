@@ -17,6 +17,7 @@ type ClientMessageKey = Exclude<ClientMessage['event'], undefined>['$case']
 export class Client {
   client: WebSocket
   notificationHandler?: (message: SnackbarMessage, options?: OptionsObject | undefined) => void
+  retryMessageBuffer: Writer[] = []
   constructor() {
     this.client = new WebSocket(HOST);
     this.client.binaryType = "arraybuffer"; 
@@ -31,7 +32,11 @@ export class Client {
         this.notificationHandler('Websocket Connection was closed', {variant: 'error'})
       console.log('onclose', event) 
     };
-    this.client.onopen = event => console.log('connected');
+    this.client.onopen = event => {
+      console.log('connected');
+      this.retryMessageBuffer.forEach(message => this.send(message))
+    }
+    
   }
 
   setNotificationHandler(handler: (message: SnackbarMessage, options?: OptionsObject | undefined) => void) {
@@ -43,6 +48,7 @@ export class Client {
       this.client.send(message.finish());
     } else {
       console.log('not connected', this.client.readyState)
+      this.retryMessageBuffer.push(message)
     }
   }
 
