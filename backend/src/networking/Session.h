@@ -158,6 +158,10 @@ public:
             handle_place_order(msg.place_order());
             break;
         case event::ClientMessage::kCancelOrder:
+            handle_cancle_order(msg.cancel_order());
+            break;
+        case event::ClientMessage::kPartialCancleOrder:
+            handle_partial_cancle_order(msg.partial_cancle_order());
             break;
         case event::ClientMessage::kRegister:
             handle_register(msg.register_());
@@ -184,42 +188,9 @@ public:
     }
 
 private:
-    void handle_register(const event::Register &reg) {
-        std::cout << "handle_register\n";
-        std::string token = users_->register_user(reg.name());
-        cur_user_ = users_->login(token);
+    void handle_register(const event::Register &reg);
 
-        event::ServerMessage sm;
-        auto *auth_token = new event::AuthToken;
-        auth_token->set_token(std::move(token));
-        sm.set_allocated_auth_token(auth_token);
-
-        std::cout << "sending token\n";
-        out_ = sm.SerializeAsString();
-        send_message();
-    }
-
-    void handle_login(const event::Login &login) {
-        std::cout << "handle login\n";
-        cur_user_ = users_->login(login.token());
-
-        event::ServerMessage sm;
-        if (cur_user_.has_value()) {
-            std::cout << "current user: " << cur_user_.value()->name << "\n";
-            auto *auth_token = new event::AuthToken;
-            auth_token->set_token(login.token());
-            sm.set_allocated_auth_token(auth_token);
-        } else {
-            std::cout << "no user found for this token.\n";
-            auto *error = new event::Error;
-            error->set_error("Error: Invalid Token.");
-            sm.set_allocated_error(error);
-        }
-
-        std::cout << "sending response.\n";
-        out_ = sm.SerializeAsString();
-        send_message();
-    }
+    void handle_login(const event::Login &login);
 
     Side convert(event::OrderType type) {
         switch (type) {
@@ -233,6 +204,11 @@ private:
     }
 
     void handle_place_order(const event::PlaceOrder &order);
+
+    void handle_cancle_order(const event::CancelOrder& co);
+
+    void handle_partial_cancle_order(const event::PartialCancelOrder& co);
+    
 };
 
 

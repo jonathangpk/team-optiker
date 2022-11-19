@@ -8,6 +8,8 @@
 #include <memory>
 #include "Symbols.hpp"
 
+#include <atomic>
+
 using Price = int64_t;
 using Amount = uint64_t;
 using UserId = uint64_t;
@@ -30,20 +32,31 @@ struct Order {
     OrderType type;
     Side side;
     Price price;
-    Amount amount;
+    std::atomic<Amount> amount;
     UserId user_id;
     OrderId order_id;
     time_point order_submission;
-    bool cancled;
+    bool buffer_;
+
+    void CopyInto(Order& order) {
+        order.sym = sym;
+        order.type = type;
+        order.side = side;
+        order.price = price;
+        order.amount.store(amount.load()), 
+        order.user_id = user_id; 
+        order.order_id = order_id;
+        order.order_submission = order_submission;
+    }
 
     Order() {};
 
     Order(
         Symbol sym1, OrderType type1,  Side side1, Price price1, Amount amount1, UserId user_id1,
-        OrderId order_id1, time_point order_submission1, bool cancled1) :
+        OrderId order_id1, time_point order_submission1) :
             sym(sym1), type(type1), side(side1), price(price1), amount(amount1), 
             user_id(user_id1), order_id(order_id1), 
-            order_submission(order_submission1), cancled(cancled1) {
+            order_submission(order_submission1) {
 
     }
 
@@ -73,7 +86,9 @@ enum OrderStatus {
     FILLED,
     PARTIALLY_FILLED,
     PENDING, 
-    CANCLED
+    CANCLED,
+    DECREASED,
+    NO_ORDER
 };
 
 struct OrderUpdate {
@@ -103,9 +118,10 @@ struct MatchinEngineResult {
 };
 
 struct OrderEngineResult {
+    OrderEngineResult() {}
     MatchinEngineResult matching_result;
     OrderUpdate new_order_status;
-    Order order;
+    std::unique_ptr<Order> order;
 };
 
 #endif

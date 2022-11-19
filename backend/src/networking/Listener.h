@@ -19,20 +19,17 @@ class listener : public std::enable_shared_from_this<listener>
     ExchangeController* exchange_controller_;
     Users* users_;
 
-    std::function<void(std::shared_ptr<session>)> on_new_session_callback_;
 
 public:
     listener(
             net::io_context& ioc,
             tcp::endpoint endpoint,
-            std::function<void(std::shared_ptr<session>)> on_new_session_callback,
             ExchangeController* exchange_controller,
             Users* users)
             : ioc_(ioc)
             , acceptor_(ioc)
             , exchange_controller_(exchange_controller)
             , users_(users)
-            , on_new_session_callback_(on_new_session_callback)
     {
         beast::error_code ec;
 
@@ -101,7 +98,6 @@ private:
             // Create the session and run it
             auto ses = std::make_shared<session>(std::move(socket), exchange_controller_,  users_);
             ses->run();
-            on_new_session_callback_(ses);
 
         }
 

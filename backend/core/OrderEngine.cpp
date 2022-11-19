@@ -1,7 +1,8 @@
 #include "OrderEngine.hpp"
 
 OrderEngine::OrderEngine(
-        std::function<void(const OrderEngineResult&)>call_back )  {
+        std::function<void(const OrderEngineResult&)>call_back, OrderStore* store ) :
+        order_store_(store)  {
    for (size_t i = 0; i < NUM_SYMBOLS; i++) {
        symbol_to_context_.push_back(new SymbolContext(call_back));
    }
@@ -36,7 +37,7 @@ OrderEngineStatus OrderEngine::CreateLimitOrder(
         return SYMBOL_NOT_FOUND;
     }
     auto sym = symbols_it->second;
-    auto order_handle = order_store_.CreateOrder(user, LIMIT, sym, side, price, amount);
+    auto order_handle = order_store_->CreateOrder(user, LIMIT, sym, side, price, amount);
     symbol_to_context_[sym]->Append(std::move(order_handle));
 
     return ORDER_SUBMITTED;
@@ -54,7 +55,7 @@ OrderEngineStatus OrderEngine::CreateExecuteOrCancelOrder(
     }
     
     auto sym = symbols_it->second;
-    auto order_handle = order_store_.CreateOrder(user, EXECUTE_OR_CANCLE, sym, side, price, amount);
+    auto order_handle = order_store_->CreateOrder(user, EXECUTE_OR_CANCLE, sym, side, price, amount);
     symbol_to_context_[sym]->Append(std::move(order_handle));
 
     return ORDER_SUBMITTED;

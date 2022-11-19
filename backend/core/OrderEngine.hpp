@@ -80,7 +80,7 @@ protected:
 
 class OrderEngine {
 public:
-    OrderEngine(std::function<void(const OrderEngineResult&)> call_back);
+    OrderEngine(std::function<void(const OrderEngineResult&)> call_back, OrderStore* store);
     ~OrderEngine();
 
     using OrderEngineResultOrStatus
@@ -101,7 +101,7 @@ private:
     std::vector<SymbolContext*> symbol_to_context_;
 
 
-    OrderStore order_store_;
+    OrderStore* order_store_;
 
 };
 
