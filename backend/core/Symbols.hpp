@@ -14,7 +14,7 @@ enum Symbol : uint64_t {
     ST6,
     ST7,
     ST8,
-    ST9
+    ST9,
     // Last Symbol dont remove this:
     NUM_SYMBOLS
 };
