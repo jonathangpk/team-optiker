@@ -16,12 +16,12 @@ OrderEngine::~OrderEngine() {
 
 }
 
-StatusOr<std::pair<Price,Price>,OrderEngineStatus>
+std::pair<Price,Price>
 OrderEngine::GetBuyAndSellPrice(const std::string& symbol) {
     auto symbols_it = STRING_TO_SYMBOL.find(symbol);
     if (symbols_it == STRING_TO_SYMBOL.end()) {
         // Symbol not found 
-        return SYMBOL_NOT_FOUND;
+        return {0,0};
     }
     auto sym = symbols_it->second;
     return symbol_to_context_[sym]->GetBuyAndSellPrice();

@@ -20,8 +20,8 @@ public:
 
     std::pair<Price,Price> GetBuyAndSellPrice() {
         
-        Price buy = buy_side_.Top()->price;
-        Price sell = sell_side_.Top()->price;
+        Price buy = buy_side_.size() == 0 ? 0 : buy_side_.Top()->price;
+        Price sell = sell_side_.size() == 0 ? 0 : sell_side_.Top()->price;
         return {buy, sell};
         
     }

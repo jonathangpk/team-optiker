@@ -88,11 +88,12 @@ message ListingPrice {
   uint64 volume = 3;
   int64 bid_price = 4;
   int64 ask_price = 5;
+  string symbol = 6;
 }
 // Server
 // Server sends by default to all clients the price updates of all listings
 message ListingPrices {
-  map<string, ListingPrice> listings = 1;
+  repeated ListingPrice listings = 1;
 }
 
 /**

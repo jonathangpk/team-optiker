@@ -103,6 +103,10 @@ public:
         out_ = str;
     }
 
+    void set_message_fomr_copy(const std::string &str) {
+        out_ = str;
+    }
+
     void send_message() {
         ws_.async_write(
                 net::buffer(out_),
@@ -138,6 +142,8 @@ public:
             std::size_t bytes_transferred)
     {
         boost::ignore_unused(bytes_transferred);
+
+        std::cout << "got somethin" << std::endl;
 
         // This indicates that the session was closed
         if(ec == websocket::error::closed)
