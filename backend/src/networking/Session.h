@@ -238,7 +238,7 @@ private:
 
     void handle_partial_cancle_order(const event::PartialCancelOrder& co);
 
-    void handle_new_news(const event::ServerMessage& cn);
+    void handle_new_news(const event::CreateNews& cn);
 
 };
 

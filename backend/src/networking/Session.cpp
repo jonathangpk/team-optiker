@@ -84,7 +84,7 @@ void session::handle_login(const event::Login &login) {
         (*cur_user_)->id, std::move(shared_from_this()));
 }
 
-void session::handle_new_news(const event::ServerMessage& sm) {
+void session::handle_new_news(const event::CreateNews& cn) {
     if (!(cur_user_.has_value() && cur_user_.value()->id==ADMIN)) {
         event::ServerMessage sm_error;
         std::cout << "Illegal Access. User not Admin.\n";
@@ -94,5 +94,9 @@ void session::handle_new_news(const event::ServerMessage& sm) {
 
         send(boost::make_shared<std::string const>(sm_error.SerializeAsString()));
     }
+    event::ServerMessage sm;
+    auto cn_c = new event::CreateNews(cn);
+    sm.set_allocated_create_news(cn_c);
+
     exchnage_controller_->broadcast(sm.SerializeAsString());
 }
