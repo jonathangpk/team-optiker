@@ -244,6 +244,12 @@ public:
         position_store_.AddCashAndPosition(user, START_CAPITAL, static_cast<Symbol>(0), 0);
     }
 
+    void broadcast(std::string str) {
+        auto ss = boost::make_shared<std::string>(str);
+         for(auto [_, session] : user_sessions_ ) {
+             session->send(ss);
+         }
+    }
 private:
     const Position& GetPosition(UserId user) {
        return position_store_.GetPosition(user);

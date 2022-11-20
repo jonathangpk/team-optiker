@@ -14,10 +14,10 @@ export const OrderView = () => {
   const order = store.orders[ID];
   return (
     <Container title="Order" navigationPosition="home" >
-      <Typography variant="h4">Order {order.ticker}</Typography>
-      <Typography variant="h5">Price: {order.price}</Typography>
-      <Typography variant="h5">Volume: {order.amount}</Typography>
-      <Typography variant="h5">Total: {order.price * order.amount}</Typography>
+      <Typography color={'text.primary'} variant="h4">Order {order.ticker}</Typography>
+      <Typography color={'text.primary'} variant="h5">Price: {order.price}</Typography>
+      <Typography color={'text.primary'} variant="h5">Volume: {order.amount}</Typography>
+      <Typography color={'text.primary'} variant="h5">Total: {order.price * order.amount}</Typography>
 
       <Button onClick={() => store.cancelOrder(ID)}>Delete</Button>
 

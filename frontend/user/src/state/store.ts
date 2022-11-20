@@ -1,7 +1,7 @@
 import create, { StateCreator } from 'zustand'
 
 import { MI } from '../util';
-import { InfoPosition, News } from "./../generated/events";
+import { ClientMessage, InfoPosition, News } from "./../generated/events";
 import { AuthSlice, authSlice } from './authStore';
 import { Client } from './client';
 import { ListingSlice, listingSlice } from './listingStore';
@@ -30,6 +30,7 @@ export interface NewsSlice {
   onNewNews: (news: INews) => void;
   hideNews: () => void;
   showNews: (news: INews) => void;
+  createNews: (news: INews) => void;
 }
  
 export const newsSlice: StateCreator<Store, [], [], NewsSlice> = (set, get) => ({
@@ -38,6 +39,12 @@ export const newsSlice: StateCreator<Store, [], [], NewsSlice> = (set, get) => (
   setNews: (news) => set({ news }),
   onNewNews: (news) => set({ newsPopup: news }),
   hideNews: () => set({ newsPopup: undefined }),
+  createNews: (news) => get().client.send(ClientMessage.encode({
+    event: {
+      $case: 'createNews',
+      createNews: news
+    }
+  })),
   showNews: news => set({ newsPopup: news }),
 })
 
