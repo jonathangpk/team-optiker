@@ -41,7 +41,7 @@ public:
                     left = std::max(left, Amount(0));
                     OrderUpdate order_update {
                         top->order_id, top->user_id, 
-                        left, book_order_status
+                        left, fill_amount, book_order_status
                     };
 
                     TradeLog trade {

@@ -34,28 +34,28 @@ class ExchangeController {
         
         // This thread is bradcasting to clients.
         while(true) {
-            // event::ServerMessage sm;
-            // auto *created = new event::ListingPrices; 
-            // for(auto [key, _] : STRING_TO_SYMBOL ) {
+            event::ServerMessage sm;
+            auto *created = new event::ListingPrices; 
+            for(auto [key, _] : STRING_TO_SYMBOL ) {
                 
-            //     auto res = order_engine_.GetBuyAndSellPrice(key);
-            //     if(key.size() == 0) {
-            //         auto el = created->add_listings();
-            //         el->set_symbol(key);
-            //         el->set_bid_price(res.first);
-            //         el->set_ask_price(res.second);
-            //         el->set_volume(0);
-            //     }
-            //     break;
-            // }
-            // sm.set_allocated_listing_updates(created);
-            // auto serialized = sm.SerializeAsString();
+                auto res = order_engine_.GetBuyAndSellPrice(key);
+                if(key.size() == 0) {
+                    auto el = created->add_listings();
+                    el->set_symbol(key);
+                    el->set_bid_price(res.first);
+                    el->set_ask_price(res.second);
+                    el->set_volume(0);
+                }
+                break;
+            }
+            sm.set_allocated_listing_updates(created);
+            auto serialized = boost::make_shared<std::string const>(
+                    sm.SerializeAsString());
             
-            // for(auto [_, session] : user_sessions_ ) {
-            //     std::cout<< "cout" << std::endl;
-            //     session->set_message_fomr_copy(serialized);
-            //     session->send_message();
-            // }
+            for(auto [_, sess] : user_sessions_ ) {
+                std::cout<< "cout" << std::endl;
+                sess->send(serialized);
+            }
 
 
             std::this_thread::sleep_for(ms_run_loop_refresh);
@@ -126,7 +126,7 @@ class ExchangeController {
         case PARTIALLY_FILLED: {
             auto* pfilled = new event::OrderPartiallyFullfilled;
             pfilled->set_id(update.order_id);
-            pfilled->set_amount_left(update.amount_filled);
+            pfilled->set_amount_left(update.amount_left);
             sm.set_allocated_order_partially_fullfilled(pfilled);
             break;
         }
@@ -142,7 +142,7 @@ class ExchangeController {
         case DECREASED:{
             auto* canceled_part = new event::OrderPartialyCancled;
             canceled_part->set_id(update.order_id);
-            canceled_part->set_amount(update.amount_filled);
+            canceled_part->set_amount(update.amount_left);
             sm.set_allocated_order_decreased(canceled_part);
             break;
         }
@@ -164,15 +164,32 @@ class ExchangeController {
         }
     }
 
+    // void AccountUpdate(const OrderUpdate& order) {
+    //     Amount amount = order.amount_filled;
+    //     Price price = order.price;
+    //     UserId user = order.userr_id;
+    //     switch () {
+    //         case FILLED:
+    //         case PARTIALLY_FILLED:
+    //             if()
+    //             position_store_.AddCashAndPosition();
+
+    //     }
+    // }
+
     void ResultCallback(const OrderEngineResult &result) {
         auto it1 = user_sessions_.find(result.order->user_id);
         if (it1 != user_sessions_.end()) {
             auto sess = it1->second;
 
-            sess->send(boost::make_shared<std::string const>(EncodeOrderCreated(*result.order)));
+            auto enc = EncodeOrderCreated(*result.order);
+            sess->send(boost::make_shared<std::string const>(enc));
+            TrySendToAdmin(enc);
 
             auto opt = EncodeOrderUpdate(result.new_order_status);
+            
             if (opt) {
+                TrySendToAdmin(*opt);
                 sess->send(boost::make_shared<std::string const>(*opt));
                 // sess->send_message();
             }
@@ -227,8 +244,20 @@ public:
 
     bool OnOrderPlacement(UserId user, const std::string& symbol,
         Side side, Price price, Amount amount) {
-        auto status = order_engine_.CreateLimitOrder(user, symbol, side, price, amount);
-        return (status != SYMBOL_NOT_FOUND);
+
+        // auto symbols_it = STRING_TO_SYMBOL.find(symbol);
+        // if (symbols_it == STRING_TO_SYMBOL.end()) {
+        //     // Symbol not found 
+        //     return false;
+        // }
+        // auto sym = symbols_it->second;
+
+        // bool has_money = position_store_.EnsureRich(user, price * amount, sym, amount);
+        // if(has_money) {
+            auto status = order_engine_.CreateLimitOrder(user, symbol, side, price, amount);
+            return (status != SYMBOL_NOT_FOUND);
+        // }
+        return false;
     }
 
     void PartialCancleOrder(UserId user, OrderId order, Amount amount) {

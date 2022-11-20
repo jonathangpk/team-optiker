@@ -49,18 +49,18 @@ public:
         if (traded_amount == order->amount) {
             result.new_order_status = OrderUpdate {
                 order->order_id, order->user_id, 
-                order->amount, FILLED
+                0, order->amount, FILLED
             };
         } else if (traded_amount > 0) {
             result.new_order_status = OrderUpdate {
                 order->order_id, order->user_id, 
-                traded_amount, PARTIALLY_FILLED
+                order->amount - traded_amount, traded_amount, PARTIALLY_FILLED
             };
             order->amount -= traded_amount;
         } else if (traded_amount == 0) {
             result.new_order_status = OrderUpdate {
                 order->order_id, order->user_id, 
-                0, CANCLED
+                0, 0, CANCLED
             };
         }
         return result;
@@ -83,19 +83,19 @@ public:
         if (traded_amount == order->amount) {
             result.new_order_status = OrderUpdate {
                 order->order_id, order->user_id, 
-                order->amount, FILLED
+                0, order->amount, FILLED
             };
             return result;
         } else if (traded_amount > 0) {
             result.new_order_status = OrderUpdate {
                 order->order_id, order->user_id, 
-                traded_amount, PARTIALLY_FILLED
+                order->amount - traded_amount, traded_amount, PARTIALLY_FILLED
             };
             order->amount -= traded_amount;
         } else if (traded_amount == 0) {
             result.new_order_status = OrderUpdate {
                 order->order_id, order->user_id, 
-                0, PENDING
+                order->amount, 0, PENDING
             };
         }
 

@@ -94,6 +94,7 @@ enum OrderStatus {
 struct OrderUpdate {
     OrderId order_id;
     UserId user_id;
+    Amount amount_left;
     Amount amount_filled;
     OrderStatus status;
 };

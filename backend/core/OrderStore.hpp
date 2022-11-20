@@ -39,25 +39,26 @@ public:
         auto it = order_id_to_order_.find(orderid);
  
         if (it == order_id_to_order_.end()) {
-            return {orderid, user_id, 0, NO_ORDER}; 
+            return {orderid, user_id, 0, 0, NO_ORDER}; 
         }
 
         const auto& order = it->second;
         if (user_id != order->user_id) {
-            return {orderid, user_id, 0, NO_ORDER}; 
+            return {orderid, user_id, 0, 0, NO_ORDER}; 
         }
 
         bool sucess = false;
         Amount order_amount = order->amount.load();
+        Amount old_amount = order_amount;
         while(order_amount != 0) {
             sucess = order->amount.compare_exchange_strong(order_amount, 0);
             order_amount = order->amount.load();
         }
         if(sucess) {
-            return {orderid, user_id, 0, CANCLED}; 
+            return {orderid, user_id, 0, old_amount, CANCLED}; 
         } else {
             // Some other thred executed the order
-            return {orderid, user_id, 0, NO_ORDER}; 
+            return {orderid, user_id, 0, 0, NO_ORDER}; 
         }
     }
 
@@ -67,12 +68,12 @@ public:
         auto it = order_id_to_order_.find(orderid);
  
         if (it == order_id_to_order_.end()) {
-            return {orderid, user_id, 0, NO_ORDER}; 
+            return {orderid, user_id, 0, 0, NO_ORDER}; 
         }
 
         const auto& order = it->second;
         if (user_id != order->user_id) {
-            return {orderid, user_id, 0, NO_ORDER}; 
+            return {orderid, user_id, 0, 0, NO_ORDER}; 
         }
 
         bool sucess = false;
@@ -82,10 +83,10 @@ public:
             order_amount = order->amount.load();
         }
         if(sucess) {
-            return {orderid, user_id, order_amount, DECREASED}; 
+            return {orderid, user_id, order_amount, by, DECREASED}; 
         } else {
             // Some other thred executed the order
-            return {orderid, user_id, 0, NO_ORDER}; 
+            return {orderid, user_id, 0, 0, NO_ORDER}; 
         }
     }
 

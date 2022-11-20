@@ -16,7 +16,7 @@ TEST_CASE("Full Match") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
-        CHECK(result.new_order_status.amount_filled == 0);
+        CHECK(result.new_order_status.amount_left == 0);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == PENDING);
         CHECK(result.new_order_status.user_id == user);
@@ -32,12 +32,12 @@ TEST_CASE("Full Match") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
-        CHECK(result.matching_result.order_updates[0].amount_filled == 0);
+        CHECK(result.matching_result.order_updates[0].amount_left == 0);
         CHECK(result.matching_result.order_updates[0].order_id == 67);
         CHECK(result.matching_result.order_updates[0].status == FILLED);
         CHECK(result.matching_result.order_updates[0].user_id == 43);
 
-        CHECK(result.new_order_status.amount_filled == 100);
+        CHECK(result.new_order_status.amount_left == 100);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == FILLED);
         CHECK(result.new_order_status.user_id == user);
@@ -54,7 +54,7 @@ TEST_CASE("Full Match") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
-        CHECK(result.new_order_status.amount_filled == 0);
+        CHECK(result.new_order_status.amount_left == 0);
         CHECK(result.new_order_status.order_id == 68);
         CHECK(result.new_order_status.status == PENDING);
         CHECK(result.new_order_status.user_id == 44);
@@ -76,7 +76,7 @@ TEST_CASE("Partial Match") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
-        CHECK(result.new_order_status.amount_filled == 0);
+        CHECK(result.new_order_status.amount_left == 0);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == PENDING);
         CHECK(result.new_order_status.user_id == user);
@@ -92,12 +92,12 @@ TEST_CASE("Partial Match") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
-        CHECK(result.matching_result.order_updates[0].amount_filled == 50);
+        CHECK(result.matching_result.order_updates[0].amount_left == 50);
         CHECK(result.matching_result.order_updates[0].order_id == 67);
         CHECK(result.matching_result.order_updates[0].status == PARTIALLY_FILLED);
         CHECK(result.matching_result.order_updates[0].user_id == 43);
 
-        CHECK(result.new_order_status.amount_filled == 50);
+        CHECK(result.new_order_status.amount_left == 50);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == FILLED);
         CHECK(result.new_order_status.user_id == user);
@@ -114,12 +114,12 @@ TEST_CASE("Partial Match") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
-        CHECK(result.matching_result.order_updates[0].amount_filled == 0);
+        CHECK(result.matching_result.order_updates[0].amount_left == 0);
         CHECK(result.matching_result.order_updates[0].order_id == 67);
         CHECK(result.matching_result.order_updates[0].status == FILLED);
         CHECK(result.matching_result.order_updates[0].user_id == 43);
 
-        CHECK(result.new_order_status.amount_filled == 50);
+        CHECK(result.new_order_status.amount_left == 50);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == FILLED);
         CHECK(result.new_order_status.user_id == user);
@@ -142,7 +142,7 @@ TEST_CASE("Partial Match arriving order") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
-        CHECK(result.new_order_status.amount_filled == 0);
+        CHECK(result.new_order_status.amount_left == 0);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == PENDING);
         CHECK(result.new_order_status.user_id == user);
@@ -158,12 +158,12 @@ TEST_CASE("Partial Match arriving order") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 1);
-        CHECK(result.matching_result.order_updates[0].amount_filled == 0);
+        CHECK(result.matching_result.order_updates[0].amount_left == 0);
         CHECK(result.matching_result.order_updates[0].order_id == 67);
         CHECK(result.matching_result.order_updates[0].status == FILLED);
         CHECK(result.matching_result.order_updates[0].user_id == 43);
 
-        CHECK(result.new_order_status.amount_filled == 25);
+        CHECK(result.new_order_status.amount_left == 25);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == PARTIALLY_FILLED);
         CHECK(result.new_order_status.user_id == user);
@@ -180,7 +180,7 @@ TEST_CASE("Partial Match arriving order") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 0);
-        CHECK(result.new_order_status.amount_filled == 0);
+        CHECK(result.new_order_status.amount_left == 0);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == PENDING);
         CHECK(result.new_order_status.user_id == user);
@@ -196,17 +196,17 @@ TEST_CASE("Partial Match arriving order") {
         );
         auto result = orderbook.AddLimitOrder(order);
         CHECK(result.matching_result.order_updates.size() == 2);
-        CHECK(result.matching_result.order_updates[0].amount_filled == 0);
+        CHECK(result.matching_result.order_updates[0].amount_left == 0);
         CHECK(result.matching_result.order_updates[0].order_id == 68);
         CHECK(result.matching_result.order_updates[0].status == FILLED);
         CHECK(result.matching_result.order_updates[0].user_id == 44);
 
-        CHECK(result.matching_result.order_updates[1].amount_filled == 49);
+        CHECK(result.matching_result.order_updates[1].amount_left == 49);
         CHECK(result.matching_result.order_updates[1].order_id == 68);
         CHECK(result.matching_result.order_updates[1].status == PARTIALLY_FILLED);
         CHECK(result.matching_result.order_updates[1].user_id == 44);
 
-        CHECK(result.new_order_status.amount_filled == 26);
+        CHECK(result.new_order_status.amount_left == 26);
         CHECK(result.new_order_status.order_id == order_id);
         CHECK(result.new_order_status.status == FILLED);
         CHECK(result.new_order_status.user_id == user);
