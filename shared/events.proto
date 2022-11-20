@@ -275,7 +275,7 @@ message ServerMessage {
     // Auth
     AuthToken auth_token = 1;
     // News
-    CreateNews new_news = 2;
+    CreateNews create_news = 2;
     NewsList news_list = 3;
     // Static Listings List
     Listings listings = 4;
