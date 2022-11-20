@@ -369,36 +369,10 @@ const updateChart = (timeline: string) => {
     }
   }
 
-type ITimerange = "month" | "six_months" | "year" | "ytd" | "all"
-
 export const OrderGraph = () => {
 
-  const [timerange, setTimerange] = useState<ITimerange>("year");
-
   return (
-
     <Box>
-      {/* <Toolbar>
-
-        <Button
-          variant="text"
-          onClick={() => {
-            setTimerange("month");
-            updateChart("month");
-          }}
-        >
-          1M
-        </Button>
-        <Button
-          variant="text"
-          onClick={() => {
-            setTimerange("six_months");
-            updateChart("six_months");
-          }}
-        >
-          6M
-        </Button>
-      </Toolbar> */}
       <ReactApexChart options={options} series={series} type="area" height={350} />
     </Box>
   );

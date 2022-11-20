@@ -24,9 +24,6 @@ function handlePurchase(store: Store, trades: SuggestedTrade[]) {
 export function NewsPopup() {
   const store = useStore();
   const [selectedAction, setSelectedAction] = useState<NewsAction>(null as unknown as NewsAction);
-
-
-  console.log(selectedAction);
   const handleAction = (action: INewsAction) => {
 
   }
