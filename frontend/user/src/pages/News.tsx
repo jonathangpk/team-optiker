@@ -1,10 +1,12 @@
-import { Dialog, DialogContent, DialogTitle, List, Typography } from "@mui/material"
+import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, Divider, List, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material"
+import { useState } from "react";
 import { Container } from "../components/Container"
-import { INewsAction, useStore } from "../state/store"
+import { NewsAction } from "../generated/events";
+import { INewsAction, Store, useStore } from "../state/store"
 
 
 export function NewsPopup() {
-  const store = useStore()
+  const store = useStore();
 
   const handleAction = (action: INewsAction) => {
 
@@ -15,32 +17,93 @@ export function NewsPopup() {
   if (!store.newsPopup) return null
   return (
     <Dialog onClose={handleClose} open={!!store.newsPopup}>
-      <DialogTitle>{store.newsPopup.title}</DialogTitle>
+      <DialogTitle>News Alert!</DialogTitle>
       <DialogContent>
-        {store.newsPopup.description}
+        {store.newsPopup.title}
+        <br></br>
+        <Typography variant="body1" color="text.secondary">
+          {store.newsPopup.description}
+        </Typography>
+        <br></br>
+        Possible Responses
+        <br></br>
         {store.newsPopup.actions.map(action => (
-          <div onClick={() => handleAction(action)}>
-            <h3>{action.name}</h3>
-            <p>{action.description}</p>
-          </div>
+          <ButtonGroup style={{ marginTop: 10 }} variant="contained" aria-label="outlined primary button group">
+            <Tooltip title={action.description}>
+              <Button variant="outlined" onClick={() => actionPopup(store, action)}>
+                {action.name}
+              </Button>
+            </Tooltip>
+          </ButtonGroup>
         ))}
+
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
       </DialogContent>
     </Dialog>
+  );
+}
 
-  )
+function actionPopup(store: Store, action: NewsAction) {
+  return (
+    <Dialog open={true}>
+      <DialogTitle>News Alert!</DialogTitle>
+      <DialogContent>
+        Responding to: {store.newsPopup?.title}
+        <br></br>
+        <Typography variant="body1" color="text.secondary">
+          {action.description}
+        </Typography>
+        <br></br>
+        Associated Trades
+        <br></br>
+        {action.suggestedTrades.map(trade => (
+          <Typography variant="body1" color="text.secondary">
+            {`${trade.type.toUpperCase} ${trade.amount} shares of ${trade.symbol}`}
+          </Typography>
+        ))}
+        
+        <Button >EXECUTE NOW</Button>
+
+        <DialogActions>
+          <Button >Close</Button>
+        </DialogActions>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export function NewsComponent() {
   const store = useStore()
   return (
-    <div>
+    <List>
       {store.news.map(news => (
-        <div onClick={e => store.showNews(news)}>
-          <Typography variant="h5" color={'primary'}>{news.title}</Typography>
-          <Typography variant="body1" color={'primary'}>{news.description}</Typography>
-        </div>
+        <>
+          <ListItemButton
+            key={news.title}
+            alignItems="flex-start"
+            onClick={() => {
+              store.showNews(news);
+            }}
+          >
+            <ListItemText
+              primary={
+                <Typography
+                  sx={{ display: 'inline' }}
+                  variant="h6"
+                  color="text.primary"
+                >
+                  {news.title}
+                </Typography >
+              }
+              secondary={news.description}
+            />
+          </ListItemButton>
+          <Divider component="li" />
+        </>
       ))}
-    </div>
+    </List>
   )
 }
 
