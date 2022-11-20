@@ -70,8 +70,8 @@ export function ExchangeView(props: IProps) {
 					const num = parseFloat(evt.target.value);
 					if (isNaN(num)) setBid(0);
 					else {
-						if (num <= 10 * currentPrice) setBid(num);
-						else setBid(MAX_SHARES_TRADE);
+						if (currentPrice == 0 || num <= 10 * currentPrice) setBid(num);
+						else setBid(MAX_SHARES_TRADE);	
 					}
 				}}
 				InputProps={{
