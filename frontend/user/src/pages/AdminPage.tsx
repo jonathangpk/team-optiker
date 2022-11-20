@@ -16,7 +16,7 @@ const newsChoices = [
       {
         name: 'Bail Out',
         description: 'Sell shares related to Wakanda.',
-        suggestedTrages: [
+        suggestedTrades: [
           {
             type: "sell",
             symbol: "st3",
@@ -27,7 +27,7 @@ const newsChoices = [
       {
         name: 'Invest in Military',
         description: 'Invest heavily into Military Listings.',
-        suggestedTrages: [
+        suggestedTrades: [
           {
             type: "buy",
             symbol: "st4",
@@ -38,7 +38,7 @@ const newsChoices = [
       {
         name: 'Invest in Media',
         description: 'Buy shares for print and online meda.',
-        suggestedTrages: [
+        suggestedTrades: [
           {
             type: "buy",
             symbol: "st1",
@@ -78,9 +78,7 @@ function renderContent(page: string) {
 function NewsChoice() {
   const store = useStore();
   const idx = store.newsIndex;
-  if (newsChoices.length <= idx) {
-    return null
-  }
+
   return (
     <Box>
       <List>
@@ -118,11 +116,11 @@ function NewsChoice() {
                     <br></br>
                     {news.actions.map(action => (
                       <ButtonGroup style={{ marginTop: 10 }} variant="contained" aria-label="outlined primary button group">
-                        <Tooltip title={action.description}>
+                        {/* <Tooltip title={action.description}> */}
                           <Button variant="outlined" disabled={true}>
                             {action.name}
                           </Button>
-                        </Tooltip>
+                        {/* </Tooltip> */}
                       </ButtonGroup>
                     ))}
                   </>
