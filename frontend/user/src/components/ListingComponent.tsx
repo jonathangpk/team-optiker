@@ -98,7 +98,7 @@ export function ListingsComponent(props: ListingsProps) {
                     color="text.primary"
                     style={{ top: "20px", position: "relative" }}
                   >
-                    {`${store.listingsWithPrice[lst.ticker]?.price} $`}
+                    {`${store.listingsWithPrice.find(l => l.symbol === lst.ticker)?.price} $`}
                   </Typography >
                 </div>
               </ListItemButton>

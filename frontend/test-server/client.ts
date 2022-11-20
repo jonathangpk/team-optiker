@@ -98,9 +98,87 @@ class Bot {
     this.client = new Client()
     this.name = name
     this.state = {
-      staticListings: [],
+      staticListings: [
+        {
+          ticker: 'Test Stock 0',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 0',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 1',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 2',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 3',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 4',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 5',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 6',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 7',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 8',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+        {
+          ticker: 'Test Stock 9',
+          amountShares: 1,
+          description: '',
+          logo: '',
+          name: 'Test Stock 0'
+        },
+      ],
       listingOrderBook: {},
-      listingsWithPrice: {},
+      listingsWithPrice: [],
       news: [],
       orders: {},
       positions: [],
@@ -219,7 +297,7 @@ class Bot {
     }
 
     for (let listing of this.state.staticListings) {
-      const currentPrice = this.state.listingsWithPrice[listing.ticker]?.price
+      const currentPrice = this.state.listingsWithPrice.find(l => l.symbol === listing.ticker)?.price || 100
       if (!currentPrice) continue
       if (Math.random() < 1) {
         const type = Math.random() < 0.5 ? OrderType.BID : OrderType.ASK
