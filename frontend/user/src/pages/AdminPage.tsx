@@ -22,6 +22,10 @@ function renderContent(page: string) {
   return null;
 }
 
+function NewsChoice() {
+  
+}
+
 export function AdminPage() {
   const [page, setPage] = useState("home");
 
