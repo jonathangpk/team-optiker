@@ -1,19 +1,23 @@
 import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, Divider, List, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material"
 import { useState } from "react";
 import { Container } from "../components/Container"
-import { NewsAction, SuggestedTrade } from "../generated/events";
+import { NewsAction, OrderType, SuggestedTrade } from "../generated/events";
 import { INewsAction, Store, useStore } from "../state/store"
 
 function handlePurchase(store: Store, trades: SuggestedTrade[]) {
+  trades.forEach(trade => {
+    const price = store.listingsWithPrice.find(lst => lst.symbol === trade.symbol);
+    const price_val = price?.price;
 
-
-  
-  // store.placeOrder({
-  //   amount: shares,
-  //   price: bid,
-  //   ticker: id as string,
-  //   type: type === "buy" ? OrderType.BID : OrderType.ASK,
-  // })
+    if(price_val) {
+      store.placeOrder({
+        amount: trade.amount,
+        price: price_val,
+        ticker: trade.symbol,
+        type: trade.type === "buy" ? OrderType.BID : OrderType.ASK,
+      });
+    }
+  });
 }
 
 
