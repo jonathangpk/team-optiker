@@ -17,75 +17,55 @@ export interface ListingSlice {
 }
 export const listingSlice: StateCreator<Store, [], [], ListingSlice> = (set, get) => ({
   staticListings: [
+    
     {
-      ticker: 'Test Stock 0',
-      amountShares: 1,
-      description: '',
+      ticker: 'WGX',
+      amountShares: 462378,
+      description: 'Offical Government Bonds for the country of Wakanda',
       logo: '',
-      name: 'Test Stock 0'
+      name: 'Wakanda Government Bonds'
     },
     {
-      ticker: 'Test Stock 1',
-      amountShares: 1,
-      description: '',
+      ticker: 'AVX',
+      amountShares: 143242,
+      description: 'Avengers Inc. provides security all across the globe in all Metaverses',
       logo: '',
-      name: 'Test Stock 1'
+      name: 'Avengers Inc.'
     },
     {
-      ticker: 'Test Stock 2',
-      amountShares: 1,
-      description: '',
+      ticker: 'WPT',
+      amountShares: 462378,
+      description: 'Largest Newspaper and online media presence in Wakanda',
       logo: '',
-      name: 'Test Stock 2'
+      name: 'Wakanda Post'
     },
     {
-      ticker: 'Test Stock 3',
-      amountShares: 1,
-      description: '',
+      ticker: 'VIB',
+      amountShares: 17564,
+      description: 'Vibranium is noted for its extraordinary abilities to absorb, store, and release large amounts of kinetic energy',
       logo: '',
-      name: 'Test Stock 3'
+      name: 'Vibranium'
     },
     {
-      ticker: 'Test Stock 4',
-      amountShares: 1,
-      description: '',
+      ticker: 'TUM',
+      amountShares: 16234,
+      description: 'Most excellent stock on the market',
       logo: '',
-      name: 'Test Stock 4'
+      name: 'TUM'
     },
     {
-      ticker: 'Test Stock 5',
+      ticker: 'ETH',
       amountShares: 1,
-      description: '',
+      description: 'Among the highest Ranked University in Europe',
       logo: '',
-      name: 'Test Stock 5'
+      name: 'ETH'
     },
     {
-      ticker: 'Test Stock 6',
-      amountShares: 1,
-      description: '',
+      ticker: 'OPK',
+      amountShares: 52389,
+      description: 'Fictional financial scenario handling Simulation providing Services',
       logo: '',
-      name: 'Test Stock 6'
-    },
-    {
-      ticker: 'Test Stock 7',
-      amountShares: 1,
-      description: '',
-      logo: '',
-      name: 'Test Stock 7'
-    },
-    {
-      ticker: 'Test Stock 8',
-      amountShares: 1,
-      description: '',
-      logo: '',
-      name: 'Test Stock 8'
-    },
-    {
-      ticker: 'Test Stock 9',
-      amountShares: 1,
-      description: '',
-      logo: '',
-      name: 'Test Stock 9'
+      name: 'OptiKER'
     },
   ],
   setStaticListings: staticListings => {
