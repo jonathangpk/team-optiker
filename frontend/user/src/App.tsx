@@ -96,10 +96,8 @@ function App() {
     <div className="App">
       {store.authenticated == AuthState.authenticated && <RouterProvider router={router} />}
       {store.authenticated == AuthState.notRegistered && <Register />}
-      <Typography>
-        {store.authenticated == AuthState.loading && <div>Loading...</div>}
-        {store.authenticated == AuthState.tokenAvailable && <div>Logging in again ...</div>}
-      </Typography>
+      {store.authenticated == AuthState.loading && <div><Typography color={"text.primary"}>Loading...</Typography></div>}
+      {store.authenticated == AuthState.tokenAvailable && <div><Typography color={"text.primary"}>Logging in again ...</Typography></div>}
       <NewsPopup />
     </div>
   );
