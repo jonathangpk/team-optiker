@@ -115,8 +115,8 @@ export function handleServerMessage(store: Store, message: ServerMessage, snackb
     case 'positions':
       return store.setPositions(event.positions.positions)
     // News
-    case 'newNews':
-      return store.onNewNews(event.newNews)
+    case 'createNews':
+      return store.onNewNews(event.createNews)
     case 'newsList':
       return store.setNews(event.newsList.news)
     // Error
