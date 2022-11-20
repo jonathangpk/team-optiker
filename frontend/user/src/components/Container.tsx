@@ -40,7 +40,7 @@ export function Container({ children, title, navigationPosition }: ContainerProp
       </AppBar>
       <Box
         style={{
-          marginTop: 80,
+          marginTop: 70,
           width: '100%',
           position: "fixed",
           // display: "flex",
