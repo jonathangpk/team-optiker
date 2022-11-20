@@ -138,15 +138,36 @@ wss.on('connection', (ws) => {
         actions: [
             {
                 name: 'Bail Out',
-                description: 'Sell all shares related to Wakanda.',
+                description: 'Sell shares related to Wakanda.',
+                suggestedTrages: [
+                    {
+                        type: "sell",
+                        symbol: "st3",
+                        amount: 150,
+                    }
+                ]
             },
             {
                 name: 'Invest in Military',
                 description: 'Invest heavily into Military Listings.',
+                suggestedTrages: [
+                    {
+                        type: "buy",
+                        symbol: "st4",
+                        amount: 250,
+                    }
+                ]
             },
             {
                 name: 'Invest in Media',
                 description: 'Buy shares for print and online meda.',
+                suggestedTrages: [
+                    {
+                        type: "buy",
+                        symbol: "st1",
+                        amount: 150,
+                    }
+                ]
             },
             // {
             //     name: 'Long Vibranium',

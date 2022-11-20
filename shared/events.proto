@@ -26,9 +26,16 @@ message AuthToken {
 */
 
 // Defines what options a user has for a given event
+message SuggestedTrade {
+  string symbol = 1;
+  string type = 2;
+  uint32 amount = 3;
+}
+
 message NewsAction {
   string name = 1;
   string description = 2;
+  repeated SuggestedTrade suggestedTrades = 3;
 }
 // Notification when a new news event was created
 message News {
