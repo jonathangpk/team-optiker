@@ -41,6 +41,12 @@ message NewsList {
   repeated News news = 1;
 }
 
+message CreateNews {
+  string title = 1;
+  string description = 2;
+  repeated NewsAction actions = 3;
+}
+
 
 /**
   Static Listings
