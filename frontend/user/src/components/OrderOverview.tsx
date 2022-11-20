@@ -11,7 +11,7 @@ import { useStore } from "../state/store";
 // }
 
 const orderTypeToText = [
-  "SOLD", "BOUGHT", "ERROR"
+  "Sold", "Buy", "Error"
 ]
 
 export function OrderOverview() {
@@ -57,7 +57,7 @@ export function OrderOverview() {
                         variant="subtitle1"
                         color="text.secondary"
                       >
-                        {` - ${order.amount} shares at ${order.price}`}
+                        {` - ${order.amount} shares at ${order.price / 100}`}
                       </Typography>
                   }
                   key={`it${order.id}`}
