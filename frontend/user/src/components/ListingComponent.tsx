@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 
 import { useNavigate } from "react-router-dom";
 import ListItemButton from '@mui/material/ListItemButton';
-import { useStore } from '../state/store';
+import { Store, useStore } from '../state/store';
 
 
 const dummy_data: IListing[] = [
@@ -49,6 +49,11 @@ interface IListing {
 
 interface ListingsProps {
   height?: string;
+}
+
+const extractPrice = (store: Store, symbol: string) : number => {
+  const priceObj = store.listingsWithPrice.find(lst => lst.symbol === symbol);
+  return (((priceObj?.askPrice || 0) + (priceObj?.bidPrice || 0)) / 2);
 }
 
 export function ListingsComponent(props: ListingsProps) {
@@ -98,7 +103,7 @@ export function ListingsComponent(props: ListingsProps) {
                     color="text.primary"
                     style={{ top: "20px", position: "relative" }}
                   >
-                    {`${store.listingsWithPrice.find(l => l.symbol === lst.ticker)?.price} $`}
+                    {`${extractPrice(store, lst.ticker)} $`}
                   </Typography >
                 </div>
               </ListItemButton>

@@ -7,7 +7,7 @@ import { INewsAction, Store, useStore } from "../state/store"
 function handlePurchase(store: Store, trades: SuggestedTrade[]) {
   trades.forEach(trade => {
     const price = store.listingsWithPrice.find(lst => lst.symbol === trade.symbol);
-    const price_val = price?.price;
+    const price_val = trade.type === "buy" ? price?.bidPrice : price?.askPrice;
 
     if(price_val) {
       store.placeOrder({

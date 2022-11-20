@@ -7,6 +7,7 @@ import { OrderGraph } from "../components/OrderGraph";
 import FeedIcon from '@mui/icons-material/Feed';
 import { OrderListComponent } from "../components/OrderListComponent";
 import { useStore } from "../state/store";
+import { News } from "../generated/events";
 
 const newsChoices = [
   {
@@ -37,7 +38,7 @@ const newsChoices = [
       },
       {
         name: 'Invest in Media',
-        description: 'Buy shares for print and online meda.',
+        description: 'Buy shares for print and online media.',
         suggestedTrades: [
           {
             type: "buy",
@@ -46,13 +47,48 @@ const newsChoices = [
           }
         ]
       },
-      // {
-      //     name: 'Long Vibranium',
-      //     description: 'Long Vibranium',
-      // }
+    ]
+  },
+  
+  {
+    title: "P = NP confirmed!",
+    description: "It has finally happened. Researchers from TUM and ETH have solve a problem from theoretical computer science that has challenged humanity for decades. This is considered to have far-reaching consequences.",
+    actions: [
+      {
+        name: 'Invest in Universities',
+        description: 'Buy shares for universities.',
+        suggestedTrades: [
+          {
+            type: "buy",
+            symbol: "st1",
+            amount: 150,
+          },
+          {
+            type: "buy",
+            symbol: "st2",
+            amount: 200,
+          }
+        ]
+      },
+      {
+        name: 'Sell Universitiy Stocks',
+        description: 'Sell shares for universities.',
+        suggestedTrades: [
+          {
+            type: "sell",
+            symbol: "st1",
+            amount: 150,
+          },
+          {
+            type: "sell",
+            symbol: "st2",
+            amount: 200,
+          }
+        ]
+      }
     ]
   }
-];
+] as News[];
 
 function renderContent(page: string) {
   switch (page) {
@@ -82,7 +118,7 @@ function NewsChoice() {
   return (
     <Box>
       <List>
-        {store.news.map(news => (
+        {newsChoices.map(news => (
           <>
             <ListItemButton
               key={news.title}

@@ -187,14 +187,14 @@ wss.on('connection', (ws) => {
         }
     }).finish())
 
-    setTimeout(() => {
-        ws.send(ServerMessage.encode({
-            event: {
-                $case: 'newNews',
-                newNews: news,
-            }
-        }).finish())
-    }, 2000)
+    // setTimeout(() => {
+    //     ws.send(ServerMessage.encode({
+    //         event: {
+    //             $case: 'newNews',
+    //             newNews: news,
+    //         }
+    //     }).finish())
+    // }, 2000)
     setInterval(() => {
         const val = Math.floor(Math.random() * 1000)
         ws.send(ServerMessage.encode({

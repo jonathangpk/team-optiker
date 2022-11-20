@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "../components/Container";
 import { OrderType } from "../generated/events";
-import { useStore } from "../state/store";
+import { Store, useStore } from "../state/store";
 
 export type BuyOrSell = "buy" | "sell";
 const MAX_SHARES_TRADE = 100000;
@@ -11,13 +11,17 @@ const MAX_SHARES_TRADE = 100000;
 interface IProps {
 	type: BuyOrSell;
 }
+const extractPrice = (store: Store, symbol: string) : number => {
+  const priceObj = store.listingsWithPrice.find(lst => lst.symbol === symbol);
+  return (((priceObj?.askPrice || 0) + (priceObj?.bidPrice || 0)) / 2);
+}
 
 export function ExchangeView(props: IProps) {
 	let { id } = useParams<{ id: string }>();
 	const [shares, setShares] = useState<number>(1);
 	const store = useStore();
-  const price = store.listingsWithPrice.find(lst => lst.symbol === id);
-	const currentPrice = (price?.price || 0) / 100;
+  // const price = store.listingsWithPrice.find(lst => lst.symbol === id);
+	const currentPrice = extractPrice(store, id as string);
 	const [bid, setBid] = useState<number>(currentPrice);
 	const navigate = useNavigate();
 

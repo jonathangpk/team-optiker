@@ -51,9 +51,6 @@ export const newsSlice: StateCreator<Store, [], [], NewsSlice> = (set, get) => (
         createNews: news
       }
     }));
-    set({
-      newsIndex: get().newsIndex + 1
-    })
   },
   showNews: news => set({ newsPopup: news }),
 })
