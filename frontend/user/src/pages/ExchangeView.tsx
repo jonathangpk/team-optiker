@@ -8,8 +8,6 @@ import { useStore } from "../state/store";
 export type BuyOrSell = "buy" | "sell";
 const MAX_SHARES_TRADE = 100000;
 
-const currentPrice = 38.32;
-
 interface IProps {
 	type: BuyOrSell;
 }
@@ -17,10 +15,12 @@ interface IProps {
 export function ExchangeView(props: IProps) {
 	let { id } = useParams<{ id: string }>();
 	const [shares, setShares] = useState<number>(1);
-	const [bid, setBid] = useState<number>(currentPrice);
 	const store = useStore();
-
+  const price = store.listingsWithPrice.find(lst => lst.symbol === id);
+	const currentPrice = (price?.price || 0) / 100;
+	const [bid, setBid] = useState<number>(currentPrice);
 	const navigate = useNavigate();
+
 	
   if (!id || !store.staticListings.some(lst => lst.ticker === id)) {
 		// invalid stock

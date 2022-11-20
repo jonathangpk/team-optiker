@@ -48,7 +48,7 @@ interface IListing {
 }
 
 interface ListingsProps {
-
+  height?: string;
 }
 
 export function ListingsComponent(props: ListingsProps) {
@@ -62,7 +62,7 @@ export function ListingsComponent(props: ListingsProps) {
       <List sx={{
         width: '100%',
         bgcolor: 'background.paper',
-        maxHeight: "80vh",
+        maxHeight: props.height || "80vh",
         overflow: "auto",
       }}>
         {

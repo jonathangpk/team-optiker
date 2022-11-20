@@ -2,7 +2,6 @@ import { Button, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "../components/Container";
 import { PriceGraph } from "../components/NewChart";
-import { OrderType } from "../generated/events";
 import { useStore } from "../state/store";
 
 export function ListingDetail() {
@@ -10,6 +9,7 @@ export function ListingDetail() {
   const navigate = useNavigate();
   const store = useStore();
   const listing = store.staticListings.find(lst => lst.ticker === id);
+  const price = store.listingsWithPrice.find(lst => lst.symbol === id);
 
   if (!id || !listing) {
 		// invalid stock
@@ -35,7 +35,7 @@ export function ListingDetail() {
         variant="h6"
         color="text.primary"
       >
-        {`Price: 38.32$`}
+        {`Price: ${((price?.price || 0) / 100).toFixed(2)}$`}
       </Typography>
       <Button
           variant="outlined"
@@ -55,6 +55,10 @@ export function ListingDetail() {
         >
           SELL
         </Button>
+        <div style={{marginTop: 20}}>
+            <Typography variant="body2" color="text.primary">{`Ask Price: ${((price?.askPrice || 0) / 100).toFixed(2)}$`}</Typography>
+            <Typography variant="body2" color="text.primary">{`Bid Price: ${((price?.bidPrice || 0) / 100).toFixed(2)}$`}</Typography>
+        </div>
     </Container>
   )
 }
