@@ -40,6 +40,8 @@ class session : public std::enable_shared_from_this<session>
     Users* users_;
     std::optional<const User*> cur_user_ = {};
 
+    std::vector<boost::shared_ptr<std::string const>> queue_;
+
 
 public:
     // Take ownership of the socket
@@ -99,20 +101,21 @@ public:
         do_read();
     }
 
-    void set_message(std::string &&str) {
-        out_ = str;
-    }
+    // void set_message(std::string &&str) {
+    //     out_ = str;
+    // }
 
-    void set_message_fomr_copy(const std::string &str) {
-        out_ = str;
-    }
+    // void set_message_fomr_copy(const std::string &str) {
+    //     out_ = str;
+    // }
 
-    void send_message() {
-        ws_.async_write(
-                net::buffer(out_),
-                beast::bind_front_handler(
-                        &session::on_write,
-                        shared_from_this()));
+    void send(boost::shared_ptr<std::string const> const & ss) {
+        net::post(
+            ws_.get_executor(),
+            beast::bind_front_handler(
+                &session::on_send,
+                shared_from_this(),
+                ss));
     }
 
     void send_error(const char* str) {
@@ -121,8 +124,8 @@ public:
         error->set_error(str);
         sm.set_allocated_error(error);
 
-        out_ = sm.SerializeAsString();
-        send_message();
+        // out_ = sm.SerializeAsString();
+        send(boost::make_shared<std::string const>(sm.SerializeAsString()));
     }
 
     void
@@ -143,7 +146,7 @@ public:
     {
         boost::ignore_unused(bytes_transferred);
 
-        std::cout << "got somethin" << std::endl;
+        
 
         // This indicates that the session was closed
         if(ec == websocket::error::closed)
@@ -185,12 +188,37 @@ public:
         do_read();
     }
 
-    void
-    on_write(beast::error_code ec, std::size_t bytes_transferred) {
-        boost::ignore_unused(bytes_transferred);
+    void on_send(boost::shared_ptr<std::string const> const& ss) {
+    // Always add to queue
+    queue_.push_back(ss);
 
-        if(ec)
-            return fail(ec, "write");
+    // Are we already writing?
+    if(queue_.size() > 1)
+        return;
+
+    // We are not currently writing, so send this immediately
+    ws_.async_write(
+        net::buffer(*queue_.front()),
+        beast::bind_front_handler(
+            &session::on_write,
+            shared_from_this()));
+    }
+    
+    void on_write(beast::error_code ec, std::size_t) {
+    // Handle the error, if any
+    if(ec)
+        return fail(ec, "write");
+
+    // Remove the string from the queue
+    queue_.erase(queue_.begin());
+
+    // Send the next message if any
+    if(! queue_.empty())
+        ws_.async_write(
+            net::buffer(*queue_.front()),
+            beast::bind_front_handler(
+                &session::on_write,
+                shared_from_this()));
     }
 
 private:
