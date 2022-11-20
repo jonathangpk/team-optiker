@@ -256,6 +256,9 @@ message ClientMessage {
     CancelOrder cancel_order = 6;
     PartialCancelOrder partial_cancle_order = 7;
     Error error = 8;
+
+    // News (admin)
+    CreateNews create_news = 9;
   }
 }
 
