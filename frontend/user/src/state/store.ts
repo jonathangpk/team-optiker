@@ -1,7 +1,7 @@
 import create, { StateCreator } from 'zustand'
 
 import { MI } from '../util';
-import { InfoPosition, News } from "./../generated/events";
+import { ClientMessage, InfoPosition, News } from "./../generated/events";
 import { AuthSlice, authSlice } from './authStore';
 import { Client } from './client';
 import { ListingSlice, listingSlice } from './listingStore';
@@ -26,18 +26,35 @@ export type INewsAction =  INews['actions'][number]
 export interface NewsSlice {
   news: INews[];
   newsPopup: INews | undefined;
+  newsIndex: number; // only admin choice relevance
   setNews: (news: INews[]) => void;
   onNewNews: (news: INews) => void;
   hideNews: () => void;
   showNews: (news: INews) => void;
+  createNews: (news: INews) => void;
 }
  
 export const newsSlice: StateCreator<Store, [], [], NewsSlice> = (set, get) => ({
   news: [],
   newsPopup: undefined,
+  newsIndex: 0,
   setNews: (news) => set({ news }),
-  onNewNews: (news) => set({ newsPopup: news }),
+  onNewNews: (news) => set({
+    newsPopup: news,
+    news: [news, ...get().news]
+  }),
   hideNews: () => set({ newsPopup: undefined }),
+  createNews: (news) => {
+    get().client.send(ClientMessage.encode({
+      event: {
+        $case: 'createNews',
+        createNews: news
+      }
+    }));
+    set({
+      newsIndex: get().newsIndex + 1
+    })
+  },
   showNews: news => set({ newsPopup: news }),
 })
 

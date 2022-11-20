@@ -1,4 +1,5 @@
 import { Button, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "../components/Container";
 import { PriceGraph } from "../components/NewChart";
@@ -8,8 +9,16 @@ export function ListingDetail() {
   let { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const store = useStore();
+  const [priceHistory, setPriceHistory] = useState<number[]>([]);
   const listing = store.staticListings.find(lst => lst.ticker === id);
-  const price = store.listingsWithPrice.find(lst => lst.symbol === id);
+  let price = store.listingsWithPrice.find(lst => lst.symbol === id);
+
+  useEffect(() => {
+    const newPrice = store.listingsWithPrice.find(lst => lst.symbol === id)?.price;
+    if(newPrice) {
+      setPriceHistory([...priceHistory, newPrice]);
+    }
+  }, [price]);
 
   if (!id || !listing) {
 		// invalid stock
@@ -18,7 +27,7 @@ export function ListingDetail() {
 
   return (
     <Container title={id || ''} navigationPosition="listings">
-    <PriceGraph />
+    <PriceGraph history={priceHistory} />
     <Typography
         sx={{ display: 'inline', alignItems: "left" }}
         component="span"
