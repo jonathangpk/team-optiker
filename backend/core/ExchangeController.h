@@ -13,6 +13,9 @@ class ExchangeController;
 #include <chrono>
 #include <thread>
 
+#include <optional>
+#include <boost/make_shared.hpp>
+
 
 #include <map>
 
@@ -31,27 +34,28 @@ class ExchangeController {
         
         // This thread is bradcasting to clients.
         while(true) {
-            event::ServerMessage sm;
-            auto *created = new event::ListingPrices; 
-            for(auto [key, _] : STRING_TO_SYMBOL ) {
+            // event::ServerMessage sm;
+            // auto *created = new event::ListingPrices; 
+            // for(auto [key, _] : STRING_TO_SYMBOL ) {
                 
-                auto res = order_engine_.GetBuyAndSellPrice(key);
-                if(key.size() == 0) {
-                    auto el = created->add_listings();
-                    el->set_bid_price(res.first);
-                    el->set_ask_price(res.second);
-                    el->set_volume(0);
-                }
-                break;
-            }
-            sm.set_allocated_listing_updates(created);
-            auto serialized = sm.SerializeAsString();
+            //     auto res = order_engine_.GetBuyAndSellPrice(key);
+            //     if(key.size() == 0) {
+            //         auto el = created->add_listings();
+            //         el->set_symbol(key);
+            //         el->set_bid_price(res.first);
+            //         el->set_ask_price(res.second);
+            //         el->set_volume(0);
+            //     }
+            //     break;
+            // }
+            // sm.set_allocated_listing_updates(created);
+            // auto serialized = sm.SerializeAsString();
             
-            for(auto [_, session] : user_sessions_ ) {
-                std::cout<< "cout" << std::endl;
-                session->set_message_fomr_copy(serialized);
-                session->send_message();
-            }
+            // for(auto [_, session] : user_sessions_ ) {
+            //     std::cout<< "cout" << std::endl;
+            //     session->set_message_fomr_copy(serialized);
+            //     session->send_message();
+            // }
 
 
             std::this_thread::sleep_for(ms_run_loop_refresh);
@@ -110,7 +114,7 @@ class ExchangeController {
         return sm.SerializeAsString();
     }
 
-    std::string EncodeOrderUpdate(const OrderUpdate& update) {
+    std::optional<std::string> EncodeOrderUpdate(const OrderUpdate& update) {
         event::ServerMessage sm;
         switch(update.status) {
         case FILLED: {
@@ -132,15 +136,22 @@ class ExchangeController {
             sm.set_allocated_order_canceld(canceled);
             break;
         }
-        case PENDING:
-            break;
-        case DECREASED:
-            break;
-        case NO_ORDER:
+        case PENDING: {
+            return std::nullopt;
+        } 
+        case DECREASED:{
+            auto* canceled_part = new event::OrderPartialyCancled;
+            canceled_part->set_id(update.order_id);
+            canceled_part->set_amount(update.amount_filled);
+            sm.set_allocated_order_decreased(canceled_part);
             break;
         }
+        case NO_ORDER: {
+            std::cout << "No order??" << std::endl;
+            return std::nullopt;
+        }    
+        }
         
-
         return sm.SerializeAsString();
     }
 
@@ -149,8 +160,7 @@ class ExchangeController {
         if (it1 != user_sessions_.end()) {
             auto sess = it1->second;
 
-            sess->set_message(std::move(str));
-            sess->send_message();
+            sess->send(boost::make_shared<std::string const>(str));
         }
     }
 
@@ -159,21 +169,26 @@ class ExchangeController {
         if (it1 != user_sessions_.end()) {
             auto sess = it1->second;
 
-            sess->set_message(EncodeOrderCreated(*result.order));
-            sess->send_message();
+            sess->send(boost::make_shared<std::string const>(EncodeOrderCreated(*result.order)));
 
-            sess->set_message(EncodeOrderUpdate(result.new_order_status));
-            sess->send_message();
+            auto opt = EncodeOrderUpdate(result.new_order_status);
+            if (opt) {
+                sess->send(boost::make_shared<std::string const>(*opt));
+                // sess->send_message();
+            }
+            
         }
 
         for (auto update : result.matching_result.order_updates) {
             auto it2 = user_sessions_.find(update.user_id);
             if (it2 != user_sessions_.end()) {
                 auto sess = it2->second;
-                std::string msg = EncodeOrderUpdate(update);
-                TrySendToAdmin(msg);
-                sess->set_message(std::move(msg));
-                sess->send_message();
+                auto opt = EncodeOrderUpdate(update);
+                if (opt) {
+                    TrySendToAdmin(*opt);
+                    sess->send(boost::make_shared<std::string const>(std::move(*opt)));
+                    // sess->s<end_message();
+                }
             }
         }
 
@@ -182,8 +197,8 @@ class ExchangeController {
         if (admin != user_sessions_.end()) {
             for (auto tradelog: result.matching_result.trade_logs) {
                 auto sess = admin->second;
-                sess->set_message(EncodeTradeLog(tradelog));
-                sess->send_message();
+                sess->send(boost::make_shared<std::string const>(EncodeTradeLog(tradelog)));
+                // sess->send_message();
             }
         }
     }
@@ -197,7 +212,7 @@ public:
     run_loop_thread_(std::bind_front(&ExchangeController::RunLoop, this))
     {
 
-        std::cout << "create it" << std::endl;
+        std::cout << "Exchange Created!" << std::endl;
     }
 
 
@@ -205,8 +220,7 @@ public:
         // The user just connected, lets send them some swag.
         //EncodeOrders
         auto orders = order_store_.GetOrdersOfUser(userId);
-        session->set_message(EncodeOrders(orders));
-        session->send_message();
+        session->send(boost::make_shared<std::string const>(EncodeOrders(orders)));
 
         user_sessions_.insert({userId, std::move(session)});
     }

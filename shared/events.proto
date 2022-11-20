@@ -171,6 +171,11 @@ message OrderCanceled {
   uint64 id = 1;
 }
 
+message OrderPartialyCancled {
+  uint64 id = 1;
+  uint64 amount = 2;
+}
+
 // Represents order details used when fetching all orders on startup
 message InfoOrder {
   uint64 id = 1;
@@ -271,11 +276,12 @@ message ServerMessage {
     OrderPartiallyFullfilled order_partially_fullfilled = 7;
     OrderFullfilled order_fullfilled = 8;
     OrderCanceled order_canceld = 9;
-    Orders orders = 10;
+    OrderPartialyCancled order_decreased = 10;
+    Orders orders = 11;
     // Positions
-    Positions positions = 11;
+    Positions positions = 12;
     // Error
-    Error error = 12;
-    TradeLog trade_log = 13;
+    Error error = 13;
+    TradeLog trade_log = 14;
   }
 }
