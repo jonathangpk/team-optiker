@@ -16,28 +16,29 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { OrderView } from './pages/OrderView';
 import { BuyOrSell, ExchangeView } from './pages/ExchangeView';
 import { AdminPage } from './pages/AdminPage';
+import { Typography } from '@mui/material';
 
 
 function useInit() {
   const store = useStore();
-  
+
   const { enqueueSnackbar } = useSnackbar()
   const setupEventListeners = () => {
     store.client.setNotificationHandler(enqueueSnackbar)
-    
+
     store.client.setOnMessageHandler(message => {
       if (message.data instanceof ArrayBuffer) {
         // binary frame
-        const data = new Uint8Array( message.data );
+        const data = new Uint8Array(message.data);
         const msg = ServerMessage.decode(data)
         handleServerMessage(store, msg, enqueueSnackbar);
       } else {
         // text frame
         console.log('wrong ws format')
-        enqueueSnackbar('Wrong ws format', {variant: 'error'})
+        enqueueSnackbar('Wrong ws format', { variant: 'error' })
       }
     })
-    
+
   }
 
   const authInit = () => {
@@ -46,7 +47,7 @@ function useInit() {
       store.tryLogin(token);
     }
   }
-  useEffect(() => { 
+  useEffect(() => {
     setupEventListeners()
     authInit()
     // return () => client.close()
@@ -95,8 +96,8 @@ function App() {
     <div className="App">
       {store.authenticated == AuthState.authenticated && <RouterProvider router={router} />}
       {store.authenticated == AuthState.notRegistered && <Register />}
-      {store.authenticated == AuthState.loading && <div>Loading...</div>}
-      {store.authenticated == AuthState.tokenAvailable && <div>Logging in again ...</div>}
+      {store.authenticated == AuthState.loading && <div><Typography color={"text.primary"}>Loading...</Typography></div>}
+      {store.authenticated == AuthState.tokenAvailable && <div><Typography color={"text.primary"}>Logging in again ...</Typography></div>}
       <NewsPopup />
     </div>
   );
@@ -107,11 +108,11 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
   typography: {
-   "fontFamily": `Roboto`,
-   "fontSize": 14,
-   "fontWeightLight": 50,
-   "fontWeightRegular": 100,
-   "fontWeightMedium": 300
+    "fontFamily": `Roboto`,
+    "fontSize": 14,
+    "fontWeightLight": 50,
+    "fontWeightRegular": 100,
+    "fontWeightMedium": 300
   }
 });
 

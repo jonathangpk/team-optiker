@@ -54,15 +54,14 @@ void session::handle_register(const event::Register &reg) {
     sm.set_allocated_auth_token(auth_token);
 
     std::cout << "sending token\n";
-    out_ = sm.SerializeAsString();
-    send_message();
+    send(boost::make_shared<std::string const>(sm.SerializeAsString()));
+
 
     exchnage_controller_->OnNewSession(
         (*cur_user_)->id, std::move(shared_from_this()));
 }
 
 void session::handle_login(const event::Login &login) {
-    std::cout << "handle login\n";
     cur_user_ = users_->login(login.token());
     
     event::ServerMessage sm;
@@ -79,8 +78,7 @@ void session::handle_login(const event::Login &login) {
     }
 
     std::cout << "sending response.\n";
-    out_ = sm.SerializeAsString();
-    send_message();
+    send(boost::make_shared<std::string const>(sm.SerializeAsString()));
 
     exchnage_controller_->OnNewSession(
         (*cur_user_)->id, std::move(shared_from_this()));

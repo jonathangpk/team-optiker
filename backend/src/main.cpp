@@ -51,7 +51,6 @@ int main(int argc, char* argv[])
         &exchange_controller, &users)->run();
 
     // Run the I/O service on the requested number of threads
-    std::cout << "handle login\n";
     std::vector<std::thread> v;
     v.reserve(threads - 1);
     for(auto i = threads - 1; i > 0; --i)
