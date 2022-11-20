@@ -49,7 +49,6 @@ const newsChoices = [
       },
     ]
   },
-  
   {
     title: "P = NP confirmed!",
     description: "It has finally happened. Researchers from TUM and ETH have solve a problem from theoretical computer science that has challenged humanity for decades. This is considered to have far-reaching consequences.",
@@ -86,6 +85,23 @@ const newsChoices = [
           }
         ]
       }
+    ]
+  },
+  {
+    title: "OptiKER world leader in finance!",
+    description: "As of market opening this Monday, OptiKER is the largest provider for fictional financial scenario handling simulation providing services.",
+    actions: [
+      {
+        name: 'Invest in OptiKER',
+        description: 'Buy shares for universities.',
+        suggestedTrades: [
+          {
+            type: "buy",
+            symbol: "st1",
+            amount: 150,
+          },
+        ]
+      },
     ]
   }
 ] as News[];
