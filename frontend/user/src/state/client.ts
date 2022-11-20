@@ -74,6 +74,10 @@ export function handleServerMessage(store: Store, message: ServerMessage, snackb
     return
   }
   const event = message.event
+
+  console.log(event.$case);
+  console.log(message);
+
   switch(event.$case) {
     // Auth
     case 'authToken':
