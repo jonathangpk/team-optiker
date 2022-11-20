@@ -76,9 +76,12 @@ void session::handle_login(const event::Login &login) {
         error->set_error("Error: Invalid Token.");
         sm.set_allocated_error(error);
     }
-
+    std::cout << "serializing response.\n";
+    auto s = sm.SerializeAsString();
+    std::cout << "wrapping response in shared_ptr.\n";
+    auto ss = boost::make_shared<std::string>(s);
     std::cout << "sending response.\n";
-    send(boost::make_shared<std::string const>(sm.SerializeAsString()));
+    send(ss);
 
     exchnage_controller_->OnNewSession(
         (*cur_user_)->id, std::move(shared_from_this()));

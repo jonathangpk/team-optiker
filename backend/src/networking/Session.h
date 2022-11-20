@@ -149,7 +149,7 @@ public:
 
         event::ClientMessage msg;
         msg.ParseFromArray(in_.cdata().data(), bytes_transferred);
-
+        std::cout << msg.DebugString() << std::endl;
         switch (msg.event_case()) {
         case event::ClientMessage::kSubscribeListing:
             break;
@@ -184,6 +184,8 @@ public:
     }
 
     void on_send(boost::shared_ptr<std::string const> const& ss) {
+
+
     // Always add to queue
     queue_.push_back(ss);
 

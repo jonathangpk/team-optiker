@@ -39,21 +39,18 @@ class ExchangeController {
             for(auto [key, _] : STRING_TO_SYMBOL ) {
                 
                 auto res = order_engine_.GetBuyAndSellPrice(key);
-                if(key.size() == 0) {
-                    auto el = created->add_listings();
-                    el->set_symbol(key);
-                    el->set_bid_price(res.first);
-                    el->set_ask_price(res.second);
-                    el->set_volume(0);
-                }
-                break;
+                auto el = created->add_listings();
+                el->set_symbol(key);
+                el->set_bid_price(res.first);
+                el->set_ask_price(res.second);
+                el->set_volume(0);
             }
             sm.set_allocated_listing_updates(created);
+
             auto serialized = boost::make_shared<std::string const>(
                     sm.SerializeAsString());
             
             for(auto [_, sess] : user_sessions_ ) {
-                std::cout<< "cout" << std::endl;
                 sess->send(serialized);
             }
 
@@ -96,7 +93,12 @@ class ExchangeController {
         created->set_price(order.price);
         created->set_amount(order.amount);
         sm.set_allocated_order_created(created);
-
+        std::cout <<  sm.DebugString() << std::endl;
+        // {
+        //     event::ClientMessage msg;
+        // msg.ParseFromString(sm.SerializeAsString());
+        // std::cout << "asdf" << msg.DebugString() << std::endl;
+        // }
         return sm.SerializeAsString();
     }
 
@@ -110,6 +112,8 @@ class ExchangeController {
         tl->set_amount(tradelog.amount);
         tl->set_price(tradelog.price);
         sm.set_allocated_trade_log(tl);
+
+        
 
         return sm.SerializeAsString();
     }
@@ -183,6 +187,7 @@ class ExchangeController {
             auto sess = it1->second;
 
             auto enc = EncodeOrderCreated(*result.order);
+             
             sess->send(boost::make_shared<std::string const>(enc));
             TrySendToAdmin(enc);
 

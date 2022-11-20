@@ -6,6 +6,7 @@ public:
         TradeLogs trades;
         OrderUpdates order_updates;
 
+
         Amount amount_traded = 0;
         Amount tradeable_amount = order->amount.load();
         bool removed_order = false;
@@ -13,6 +14,8 @@ public:
             if (order_book.size() == 0  || tradeable_amount == 0) {
                 break;
             }
+
+            
 
             const OrderHandle& top = order_book.Top();
             if ( (order_book.GetSide() == Buy && top->price >= order->price)
@@ -25,6 +28,7 @@ public:
                     order_book.RemoveTop();
                     removed_order = true;
                 } else {
+                    std::cout << "Orders got matched!" << std::endl;
                     amount_traded += fill_amount;
                     tradeable_amount -= fill_amount;
                     OrderStatus book_order_status = FILLED;
