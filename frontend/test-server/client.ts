@@ -302,8 +302,7 @@ class Bot {
       if (Math.random() < 1) {
         const type = Math.random() < 0.5 ? OrderType.BID : OrderType.ASK
         if (type == OrderType.ASK) {
-          const holdingAmount = this.state.positions.find(p => p.ticker == listing.ticker)?.amount || 0
-          const orderAmount = Math.floor(Math.random() * holdingAmount)
+          const orderAmount = Math.floor(Math.random() * orderSize)
           const price = normal(currentPrice, sigma)
           if (orderAmount > 0) {
             this.placeOrder({
