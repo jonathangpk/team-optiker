@@ -139,7 +139,7 @@ wss.on('connection', (ws) => {
             {
                 name: 'Bail Out',
                 description: 'Sell shares related to Wakanda.',
-                suggestedTrages: [
+                suggestedTrades: [
                     {
                         type: "sell",
                         symbol: "st3",
@@ -150,7 +150,7 @@ wss.on('connection', (ws) => {
             {
                 name: 'Invest in Military',
                 description: 'Invest heavily into Military Listings.',
-                suggestedTrages: [
+                suggestedTrades: [
                     {
                         type: "buy",
                         symbol: "st4",
@@ -161,7 +161,7 @@ wss.on('connection', (ws) => {
             {
                 name: 'Invest in Media',
                 description: 'Buy shares for print and online meda.',
-                suggestedTrages: [
+                suggestedTrades: [
                     {
                         type: "buy",
                         symbol: "st1",
