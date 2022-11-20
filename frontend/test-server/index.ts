@@ -134,20 +134,24 @@ wss.on('connection', (ws) => {
 
     const news = {
         title: 'Elon Musk buys Wakanda',
-        description: 'Wow! Elon Musk buys Wakanda',
+        description: 'In a completely unprecedented move the billionaire and richest person alive, Elon Musk has purchased all Wakanda Government State Bonds. Investments in Military are expected to increase. At the same time, as locals fear, the supply of independent media might suffer a great setback.',
         actions: [
             {
-                name: 'Short Twitter',
-                description: 'Short Twitter',
+                name: 'Bail Out',
+                description: 'Sell all shares related to Wakanda.',
             },
             {
-                name: 'Long Tesla',
-                description: 'Long Tesla',
+                name: 'Invest in Military',
+                description: 'Invest heavily into Military Listings.',
             },
             {
-                name: 'Long Vibranium',
-                description: 'Long Vibranium',
-            }
+                name: 'Invest in Media',
+                description: 'Buy shares for print and online meda.',
+            },
+            // {
+            //     name: 'Long Vibranium',
+            //     description: 'Long Vibranium',
+            // }
         ]
     }
 

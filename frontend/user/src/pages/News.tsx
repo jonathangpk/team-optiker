@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, List, Typography } from "@mui/material"
+import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, List, Tooltip, Typography } from "@mui/material"
 import { Container } from "../components/Container"
 import { INewsAction, useStore } from "../state/store"
 
@@ -15,15 +15,29 @@ export function NewsPopup() {
   if (!store.newsPopup) return null
   return (
     <Dialog onClose={handleClose} open={!!store.newsPopup}>
-      <DialogTitle>{store.newsPopup.title}</DialogTitle>
+      <DialogTitle>News Alert!</DialogTitle>
       <DialogContent>
-        {store.newsPopup.description}
+          {store.newsPopup.title}
+        <br></br>
+        <Typography variant="body1" color="text.secondary">
+          {store.newsPopup.description}
+        </Typography>
+        <br></br>
+        Possible Responses
+        <br></br>
         {store.newsPopup.actions.map(action => (
-          <div onClick={() => handleAction(action)}>
-            <h3>{action.name}</h3>
-            <p>{action.description}</p>
-          </div>
+          <ButtonGroup style={{marginTop: 10}} variant="contained" aria-label="outlined primary button group">
+              <Tooltip title={action.description}>
+                <Button variant="outlined" onClick={() => handleAction(action)}>
+                  {action.name}
+                </Button>
+              </Tooltip>
+          </ButtonGroup>
         ))}
+        
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
       </DialogContent>
     </Dialog>
 
