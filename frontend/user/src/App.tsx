@@ -30,7 +30,7 @@ function useInit() {
         // binary frame
         const data = new Uint8Array( message.data );
         const msg = ServerMessage.decode(data)
-        handleServerMessage(store, msg);
+        handleServerMessage(store, msg, enqueueSnackbar);
       } else {
         // text frame
         console.log('wrong ws format')

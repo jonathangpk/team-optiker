@@ -1,7 +1,7 @@
-import { Store } from "./store";
-import { ClientMessage, ServerMessage } from "../generated/events";
-import { Writer } from "protobufjs";
 import { OptionsObject, SnackbarMessage } from "notistack";
+import { Writer } from "protobufjs";
+import { ClientMessage, OrderType, ServerMessage } from "../generated/events";
+import { Store } from "./store";
 
 
 const HOST = 'ws://localhost:8080'
@@ -68,7 +68,7 @@ function exhausted(arg: never): never {
   console.log('should not happen, switch should be exhausted')
 }
 
-export function handleServerMessage(store: Store, message: ServerMessage) {
+export function handleServerMessage(store: Store, message: ServerMessage, snackbar: (message: SnackbarMessage, options?: OptionsObject | undefined) => void) {
   if (!message.event) {
     console.log("Error, no event defined on message")
     return
@@ -82,13 +82,26 @@ export function handleServerMessage(store: Store, message: ServerMessage) {
     case 'orders':
       return store.setOrders(event.orders.orders)
     case 'orderCreated':
+      snackbar(`Order received ${event.orderCreated.amount}x ${event.orderCreated.ticker} for ${event.orderCreated.price / 100}`, { variant: 'success' })
       return store.orderCreated(event.orderCreated)
-    case 'orderPartiallyFullfilled':
+    case 'orderPartiallyFullfilled': {
+      const order = store.orders[event.orderPartiallyFullfilled.id]
+      const amount = event.orderPartiallyFullfilled.amountLeft 
+      const soldBought = order.type === OrderType.BID ? 'Bought' : 'Sold'
+      snackbar(`${order.amount - amount} shares of ${order.ticker} were ${soldBought}`)
       return store.orderPartiallyFullfilled(event.orderPartiallyFullfilled)
-    case 'orderFullfilled':
-      return store.orderFullfilled(event.orderFullfilled)
-    case 'orderCanceld':
+    } 
+    case 'orderFullfilled': {
+      const order = store.orders[event.orderFullfilled.id]
+      const soldBought = order.type === OrderType.BID ? 'Bought' : 'Sold'
+      snackbar(`${order.amount} shares of ${order.ticker} were ${soldBought}`)
+      return store.orderFullfilled(event.orderFullfilled) 
+    }
+    case 'orderCanceld': {
+      const order = store.orders[event.orderCanceld.id]
+      snackbar(`Order for ${order.amount} shares of ${order.ticker} were canceled`)
       return store.orderCanceld(event.orderCanceld.id)
+    }
       // Listings
     case 'listings':
       return store.setStaticListings(event.listings.listings)
