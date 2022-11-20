@@ -101,14 +101,6 @@ public:
         do_read();
     }
 
-    // void set_message(std::string &&str) {
-    //     out_ = str;
-    // }
-
-    // void set_message_fomr_copy(const std::string &str) {
-    //     out_ = str;
-    // }
-
     void send(boost::shared_ptr<std::string const> const & ss) {
         net::post(
             ws_.get_executor(),
@@ -180,6 +172,9 @@ public:
             break;
         case event::ClientMessage::EVENT_NOT_SET:
             break;
+        case event::ClientMessage::kCreateNews: {
+            break;
+        }
         case event::ClientMessage::kError:
             break;
         }
@@ -242,7 +237,9 @@ private:
     void handle_cancle_order(const event::CancelOrder& co);
 
     void handle_partial_cancle_order(const event::PartialCancelOrder& co);
-    
+
+    void handle_new_news(const event::ServerMessage& cn);
+
 };
 
 
