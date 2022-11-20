@@ -1,13 +1,28 @@
 import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, Divider, List, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material"
 import { useState } from "react";
 import { Container } from "../components/Container"
-import { NewsAction } from "../generated/events";
+import { NewsAction, SuggestedTrade } from "../generated/events";
 import { INewsAction, Store, useStore } from "../state/store"
+
+function handlePurchase(store: Store, trades: SuggestedTrade[]) {
+
+
+  
+  // store.placeOrder({
+  //   amount: shares,
+  //   price: bid,
+  //   ticker: id as string,
+  //   type: type === "buy" ? OrderType.BID : OrderType.ASK,
+  // })
+}
 
 
 export function NewsPopup() {
   const store = useStore();
+  const [selectedAction, setSelectedAction] = useState<NewsAction>(null as unknown as NewsAction);
 
+
+  console.log(selectedAction);
   const handleAction = (action: INewsAction) => {
 
   }
@@ -16,61 +31,59 @@ export function NewsPopup() {
   }
   if (!store.newsPopup) return null
   return (
-    <Dialog onClose={handleClose} open={!!store.newsPopup}>
-      <DialogTitle>News Alert!</DialogTitle>
-      <DialogContent>
-        {store.newsPopup.title}
-        <br></br>
-        <Typography variant="body1" color="text.secondary">
-          {store.newsPopup.description}
-        </Typography>
-        <br></br>
-        Possible Responses
-        <br></br>
-        {store.newsPopup.actions.map(action => (
-          <ButtonGroup style={{ marginTop: 10 }} variant="contained" aria-label="outlined primary button group">
-            <Tooltip title={action.description}>
-              <Button variant="outlined" onClick={() => actionPopup(store, action)}>
-                {action.name}
-              </Button>
-            </Tooltip>
-          </ButtonGroup>
-        ))}
-
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function actionPopup(store: Store, action: NewsAction) {
-  return (
-    <Dialog open={true}>
-      <DialogTitle>News Alert!</DialogTitle>
-      <DialogContent>
-        Responding to: {store.newsPopup?.title}
-        <br></br>
-        <Typography variant="body1" color="text.secondary">
-          {action.description}
-        </Typography>
-        <br></br>
-        Associated Trades
-        <br></br>
-        {action.suggestedTrades.map(trade => (
+    <>
+      <Dialog onClose={handleClose} open={!!store.newsPopup}>
+        <DialogTitle>News Alert!</DialogTitle>
+        <DialogContent>
+          {store.newsPopup.title}
+          <br></br>
           <Typography variant="body1" color="text.secondary">
-            {`${trade.type.toUpperCase} ${trade.amount} shares of ${trade.symbol}`}
+            {store.newsPopup.description}
           </Typography>
-        ))}
-        
-        <Button >EXECUTE NOW</Button>
+          <br></br>
+          Possible Responses
+          <br></br>
+          {store.newsPopup.actions.map(action => (
+            <ButtonGroup style={{ marginTop: 10 }} variant="contained" aria-label="outlined primary button group">
+              <Tooltip title={action.description}>
+                <Button variant="outlined" onClick={() => setSelectedAction(action)}>
+                  {action.name}
+                </Button>
+              </Tooltip>
+            </ButtonGroup>
+          ))}
 
-        <DialogActions>
-          <Button >Close</Button>
-        </DialogActions>
-      </DialogContent>
-    </Dialog>
+          <DialogActions>
+            <Button onClick={handleClose}>Close</Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={selectedAction !== null}>
+        <DialogTitle>{selectedAction?.name}</DialogTitle>
+        <DialogContent>
+          Responding to: {store.newsPopup?.title}
+          <br></br>
+          <Typography variant="body1" color="text.secondary">
+            {selectedAction?.description}
+          </Typography>
+          <br></br>
+          Associated Trades
+          <br></br>
+          {selectedAction?.suggestedTrades.map(trade => (
+            <Typography variant="body1" color="text.secondary">
+              {`${trade.type.toUpperCase()} ${trade.amount} shares of ${trade.symbol}`}
+            </Typography>
+          ))}
+
+          <Button onClick={() => handlePurchase(store, selectedAction?.suggestedTrades)}>EXECUTE NOW</Button>
+
+          <DialogActions>
+            <Button onClick={() => setSelectedAction(null as unknown as NewsAction)}>Close</Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
