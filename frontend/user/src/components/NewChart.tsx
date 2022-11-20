@@ -283,7 +283,7 @@ const series = [{
   ]
 }];
 
-const options = {
+const options = (i: number) => ({
   chart: {
     id: 'area-datetime',
     type: 'area' as 'area',
@@ -301,9 +301,10 @@ const options = {
     enabled: false
   },
   xaxis: {
-    type: 'datetime' as 'datetime',
-    min: new Date('01 Mar 2012').getTime(),
-    tickAmount: 6,
+
+    // type: 'datetime' as 'datetime',
+    // min: new Date('01 Mar 2012').getTime(),
+    // tickAmount: 6,
   },
   tooltip: {
     x: {
@@ -320,7 +321,7 @@ const options = {
     },
     colors: ["#03610c", "#121212"],
   },
-};
+});
 
 
 const updateChart = (timeline: string) => {
@@ -371,9 +372,22 @@ const updateChart = (timeline: string) => {
 
 type ITimerange = "month" | "six_months" | "year" | "ytd" | "all"
 
-export const PriceGraph = () => {
+interface IProps {
+  history: number[];
+}
 
-  const [timerange, setTimerange] = useState<ITimerange>("year");
+function makeSeries(data: number[]) {
+  return [
+    {
+      name: "Stock value",
+      data: data.map((val, i) => [i, val])
+    }
+  ];
+}
+
+export const PriceGraph = (props: IProps) => {
+
+  // const [timerange, setTimerange] = useState<ITimerange>("year");
 
   return (
 
@@ -399,7 +413,7 @@ export const PriceGraph = () => {
           6M
         </Button>
       </Toolbar> */}
-      <ReactApexChart options={options} series={series} type="area" height={350} />
+      <ReactApexChart options={options(props.history.length)} series={makeSeries(props.history)} type="area" height={350} />
     </Box>
   );
 }
