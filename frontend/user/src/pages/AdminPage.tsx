@@ -6,6 +6,53 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import { OrderGraph } from "../components/OrderGraph";
 import FeedIcon from '@mui/icons-material/Feed';
 import { OrderListComponent } from "../components/OrderListComponent";
+import { useStore } from "../state/store";
+
+const newsChoices = [
+  {
+    title: 'Elon Musk buys Wakanda',
+    description: 'In a completely unprecedented move the billionaire and richest person alive, Elon Musk has purchased all Wakanda Government State Bonds. Investments in Military are expected to increase. At the same time, as locals fear, the supply of independent media might suffer a great setback.',
+    actions: [
+        {
+            name: 'Bail Out',
+            description: 'Sell shares related to Wakanda.',
+            suggestedTrages: [
+                {
+                    type: "sell",
+                    symbol: "st3",
+                    amount: 150,
+                }
+            ]
+        },
+        {
+            name: 'Invest in Military',
+            description: 'Invest heavily into Military Listings.',
+            suggestedTrages: [
+                {
+                    type: "buy",
+                    symbol: "st4",
+                    amount: 250,
+                }
+            ]
+        },
+        {
+            name: 'Invest in Media',
+            description: 'Buy shares for print and online meda.',
+            suggestedTrages: [
+                {
+                    type: "buy",
+                    symbol: "st1",
+                    amount: 150,
+                }
+            ]
+        },
+        // {
+        //     name: 'Long Vibranium',
+        //     description: 'Long Vibranium',
+        // }
+    ]
+}
+];
 
 function renderContent(page: string) {
   switch(page) {
@@ -23,8 +70,17 @@ function renderContent(page: string) {
 }
 
 function NewsChoice() {
-  
-}
+  const store = useStore();
+  const idx = store.newsIndex
+  if (newsChoices.length <= idx) {
+    return null
+  }
+  return (
+    <Box>
+      {newsChoices[idx].title}
+    </Box>
+  )
+} 
 
 export function AdminPage() {
   const [page, setPage] = useState("home");
@@ -45,6 +101,7 @@ export function AdminPage() {
           renderContent(page)
         }
       </Box>
+      <NewsChoice />
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
         <BottomNavigation
           showLabels={true}
