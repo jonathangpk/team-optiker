@@ -116,9 +116,11 @@ export function handleServerMessage(store: Store, message: ServerMessage, snackb
       return store.setPositions(event.positions.positions)
     // News
     case 'createNews':
+      console.log('create news in side')
       return store.onNewNews(event.createNews)
     case 'newsList':
       return store.setNews(event.newsList.news)
+    // case 'new'
     // Error
     case 'error':
       if (event.error.error === 'Error: Invalid Token.') {

@@ -173,6 +173,7 @@ public:
         case event::ClientMessage::EVENT_NOT_SET:
             break;
         case event::ClientMessage::kCreateNews: {
+            handle_new_news(msg.create_news());
             break;
         }
         case event::ClientMessage::kError:

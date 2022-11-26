@@ -193,22 +193,22 @@ class Bot {
         case 'orders':
           this.state.orders = Object.fromEntries(event.orders.orders.map(o => [o.id, o]))
           return
-        case 'orderCreated':
-          this.state.orders[event.orderCreated.id] = event.orderCreated
-          return
-        case 'orderCanceld':
-          delete this.state.orders[event.orderCanceld.id]
-          return
-        case 'orderPartiallyFullfilled':
-          const order = this.state.orders[event.orderPartiallyFullfilled.id]
-          this.state.orders[event.orderPartiallyFullfilled.id] = {
-            ...order,
-            amount: Math.min(order.amount, event.orderPartiallyFullfilled.amountLeft),
-          }
-          return
-        case 'orderFullfilled':
-          delete this.state.orders[event.orderFullfilled.id]
-          return
+        // case 'orderCreated':
+        //   this.state.orders[event.orderCreated.id] = event.orderCreated
+        //   return
+        // case 'orderCanceld':
+        //   delete this.state.orders[event.orderCanceld.id]
+        //   return
+        // case 'orderPartiallyFullfilled':
+        //   const order = this.state.orders[event.orderPartiallyFullfilled.id]
+        //   this.state.orders[event.orderPartiallyFullfilled.id] = {
+        //     ...order,
+        //     amount: Math.min(order.amount, event.orderPartiallyFullfilled.amountLeft),
+        //   }
+        //   return
+        // case 'orderFullfilled':
+        //   delete this.state.orders[event.orderFullfilled.id]
+        //   return
 
         // Listing
         case 'listings':

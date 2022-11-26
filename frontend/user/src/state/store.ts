@@ -35,7 +35,45 @@ export interface NewsSlice {
 }
  
 export const newsSlice: StateCreator<Store, [], [], NewsSlice> = (set, get) => ({
-  news: [],
+  news: [{
+    title: 'Elon Musk buys Wakanda',
+    description: 'In a completely unprecedented move the billionaire and richest person alive, Elon Musk has purchased all Wakanda Government State Bonds. Investments in Military are expected to increase. At the same time, as locals fear, the supply of independent media might suffer a great setback.',
+    actions: [
+      {
+        name: 'Bail Out',
+        description: 'Sell shares related to Wakanda.',
+        suggestedTrades: [
+          {
+            type: "sell",
+            symbol: "st3",
+            amount: 150,
+          }
+        ]
+      },
+      {
+        name: 'Invest in Military',
+        description: 'Invest heavily into Military Listings.',
+        suggestedTrades: [
+          {
+            type: "buy",
+            symbol: "st4",
+            amount: 250,
+          }
+        ]
+      },
+      {
+        name: 'Invest in Media',
+        description: 'Buy shares for print and online media.',
+        suggestedTrades: [
+          {
+            type: "buy",
+            symbol: "st1",
+            amount: 150,
+          }
+        ]
+      },
+    ]
+  }],
   newsPopup: undefined,
   newsIndex: 0,
   setNews: (news) => set({ news }),
